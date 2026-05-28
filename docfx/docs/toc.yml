@@ -2,6 +2,8 @@
   href: adding-reference-to-fna.md
 - name: Getting Started
   href: ../index.md
+- name: Samples
+  href: samples.md
 - name: MML
   href: MML.md
 - name: MyraPad

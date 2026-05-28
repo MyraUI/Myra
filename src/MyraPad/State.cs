@@ -18,7 +18,7 @@ namespace MyraPad
 		{
 			get
 			{
-				var result = Path.Combine(PathUtils.ExecutingAssemblyDirectory, StateFileName);
+				var result = Path.Combine(AppContext.BaseDirectory, StateFileName);
 				return result;
 			}
 		}

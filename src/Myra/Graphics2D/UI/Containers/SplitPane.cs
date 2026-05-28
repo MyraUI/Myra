@@ -198,7 +198,7 @@ namespace Myra.Graphics2D.UI
 				? _layout.ColumnsProportions : _layout.RowsProportions;
 
 			total = 0;
-			for(var i = 0; i < allProps.Count; i += 2)
+			for (var i = 0; i < allProps.Count; i += 2)
 			{
 				total += allProps[i].Value;
 			}
@@ -244,7 +244,7 @@ namespace Myra.Graphics2D.UI
 		/// </summary>
 		public void Reset()
 		{
-			// Clear
+			// Clear all existing layout data to rebuild from scratch
 			Children.Clear();
 			_handles.Clear();
 			_handlesSize = 0;
@@ -254,6 +254,7 @@ namespace Myra.Graphics2D.UI
 
 			var i = 0;
 
+			// Determine splitter handle size: explicit value takes precedence, otherwise derive from background image
 			var handleSize = 0;
 
 			if (HandleStyle.HandleSize != null)
@@ -265,23 +266,29 @@ namespace Myra.Graphics2D.UI
 				var asImage = HandleStyle.Background as IImage;
 				if (asImage != null)
 				{
+					// Use width for horizontal split, height for vertical
 					handleSize = Orientation == Orientation.Horizontal
 						? asImage.Size.X
 						: asImage.Size.Y;
 				}
 			}
 
+			// Build layout: widgets are interspersed with splitter handles
+			// Grid layout alternates: widget (at position 0,2,4...), handle (at position 1,3,5...)
 			foreach (var w in Widgets)
 			{
 				Proportion proportion;
+
+				// Create and position splitter handle between widgets (skip for first widget)
 				if (i > 0)
 				{
-					// Add splitter
+					// Create splitter handle button with drag-to-resize functionality
 					var handle = new Button(null)
 					{
 						ReleaseOnTouchLeft = false
 					};
 
+					// Set appropriate mouse cursor and stretch handle to fill available space
 					if (Orientation == Orientation.Horizontal)
 					{
 						handle.MouseCursor = MouseCursorType.SizeWE;
@@ -295,8 +302,10 @@ namespace Myra.Graphics2D.UI
 
 					handle.ApplyButtonStyle(HandleStyle);
 
+					// Listen for mouse/touch drag events on the handle
 					handle.PressedChanged += HandleOnPressedChanged;
 
+					// Handles use Auto proportion (take only needed space based on size)
 					proportion = new Proportion(ProportionType.Auto);
 
 					if (Orientation == Orientation.Horizontal)
@@ -316,11 +325,13 @@ namespace Myra.Graphics2D.UI
 					_handles.Add(handle);
 				}
 
+				// Create proportion for widget: intermediate widgets use Part (proportional share),
+				// last widget uses Fill (takes remaining space) to ensure pane is fully utilized
 				proportion = i < Widgets.Count - 1
 					? new Proportion(ProportionType.Part, 1.0f)
 					: new Proportion(ProportionType.Fill, 1.0f);
 
-				// Set grid coord and add widget itself
+				// Add widget to grid at appropriate column/row position
 				if (Orientation == Orientation.Horizontal)
 				{
 					Grid.SetColumn(w, i * 2);
@@ -337,20 +348,22 @@ namespace Myra.Graphics2D.UI
 				++i;
 			}
 
+			// Set fixed dimensions for all splitter handles based on orientation
 			foreach (var h in _handles)
 			{
 				if (Orientation == Orientation.Horizontal)
 				{
 					h.Width = handleSize;
-					h.Height = null;
+					h.Height = null;  // Let height stretch to fill available space
 				}
 				else
 				{
-					h.Width = null;
+					h.Width = null;  // Let width stretch to fill available space
 					h.Height = handleSize;
 				}
 			}
 
+			// Notify listeners that the pane layout has been reset
 			FireProportionsChanged();
 		}
 

@@ -26,30 +26,39 @@ namespace Myra.Graphics2D.UI
 {
 	/// <summary>
 	/// A text input widget that allows users to enter and edit text with support for undo/redo and selection.
+	/// Features include multi-line text, text wrapping, password masking, keyboard navigation, selection,
+	/// clipboard operations, and full undo/redo support.
 	/// </summary>
 	public class TextBox : Widget
 	{
 		private const int CursorUpdateDelayInMs = 30;
 
+		// Cursor rendering and timing
 		private DateTime _lastCursorUpdate;
 		private DateTime _lastBlinkStamp = DateTime.Now;
-		private bool _cursorOn = true;
+		private bool _cursorOn = true;  // Cursor visibility state for blinking animation
 		private bool _wrap = false;
+
+		// Layout engine for rendering text with proper glyph positioning
 		private readonly RichTextLayout _richTextLayout = new RichTextLayout
 		{
 			CalculateGlyphs = true,
 			SupportsCommands = false
 		};
 
+		// Cursor and selection state
 		private Point? _lastCursorPosition;
-		private int _cursorIndex;
-		private Point _internalScrolling = Mathematics.PointZero;
-		private bool _suppressRedoStackReset = false;
+		private int _cursorIndex;  // Zero-based position of cursor in text
+		private Point _internalScrolling = Mathematics.PointZero;  // Scroll offset for text that doesn't fit
+		private bool _suppressRedoStackReset = false;  // Flag to prevent redo stack reset during undo/redo operations
+
+		// Text content and display
 		private string _text;
-		private string _hintText;
+		private string _hintText;  // Placeholder text shown when empty and unfocused
 		private bool _passwordField;
 		private bool _isTouchDown;
 
+		// Undo/redo stacks for handling text modifications
 		private readonly UndoRedoStack UndoStack = new UndoRedoStack();
 		private readonly UndoRedoStack RedoStack = new UndoRedoStack();
 
@@ -386,7 +395,7 @@ namespace Myra.Graphics2D.UI
 		/// Fires every time when the text had been changed by user(doesnt fire if it had been assigned through code)
 		/// </summary>
 		public event MyraEventHandler<ValueChangedEventArgs<string>> TextChangedByUser;
-		
+
 		/// <summary>
 		/// Fires every time when the text had been deleted
 		/// </summary>
@@ -420,13 +429,15 @@ namespace Myra.Graphics2D.UI
 				this.TouchDoubleClick += TextBox_TouchDoubleClickStopPropagation;
 		}
 
-        private void TextBox_TouchDoubleClickStopPropagation(object sender, MyraEventArgs e)
-        {
+		// Prevent double-click from propagating to parent widgets
+		private void TextBox_TouchDoubleClickStopPropagation(object sender, MyraEventArgs e)
+		{
 			e.StopPropagation();
-            InputEventsManager.StopPropagation(InputEventType.TouchDown);
-        }
+			InputEventsManager.StopPropagation(InputEventType.TouchDown);
+		}
 
-        private void DeleteChars(int pos, int l)
+		// Removes 'l' characters starting at position 'pos' from the text
+		private void DeleteChars(int pos, int l)
 		{
 			if (l == 0)
 				return;
@@ -434,6 +445,7 @@ namespace Myra.Graphics2D.UI
 			UserText = UserText.Substring(0, pos) + UserText.Substring(pos + l);
 		}
 
+		// Inserts a string 's' at the specified position, returns false if string is empty
 		private bool InsertChars(int pos, string s)
 		{
 			if (string.IsNullOrEmpty(s))
@@ -447,6 +459,7 @@ namespace Myra.Graphics2D.UI
 			return true;
 		}
 
+		// Inserts a single character at the specified position
 		private bool InsertChar(int pos, char ch)
 		{
 			if (string.IsNullOrEmpty(Text))
@@ -519,6 +532,8 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Deletes 'len' characters starting at 'where', handling surrogate pairs for Unicode characters
+		// Returns the number of characters actually deleted
 		private int Delete(int where, int len)
 		{
 			if (where < 0 || where >= Length || len < 0)
@@ -526,8 +541,8 @@ namespace Myra.Graphics2D.UI
 				return 0;
 			}
 
-			// If we're trying to delete one part
-			// of a surrogate pair, delete both.
+			// Handle surrogate pairs (multi-byte Unicode characters)
+			// If we're deleting part of a surrogate pair, delete the whole pair
 			if (len == 1)
 			{
 				if (char.IsSurrogate(Text[where]))
@@ -549,6 +564,7 @@ namespace Myra.Graphics2D.UI
 			return len;
 		}
 
+		// Deletes the selected text range, adjusting cursor and selection to match the deletion
 		private void DeleteSelection()
 		{
 			if (SelectStart != SelectEnd)
@@ -566,6 +582,7 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Pastes text from clipboard, deleting any selection first
 		private bool Paste(string text)
 		{
 			text = Process(text);
@@ -582,11 +599,14 @@ namespace Myra.Graphics2D.UI
 			return false;
 		}
 
+		// Inputs a single character, handling insert mode and selection deletion
 		private void InputChar(char ch)
 		{
+			// Don't allow newline in single-line mode
 			if (!Multiline && ch == '\n')
 				return;
 
+			// In insert mode: replace character at cursor instead of inserting
 			if (InsertMode && !(SelectStart != SelectEnd) && CursorPosition < Length)
 			{
 				UndoStack.MakeReplace(Text, CursorPosition, 1, 1);
@@ -594,11 +614,11 @@ namespace Myra.Graphics2D.UI
 				if (InsertChar(CursorPosition, ch))
 				{
 					UserSetCursorPosition(CursorPosition + 1);
-
 				}
 			}
 			else
 			{
+				// In append mode: delete selection if any, then insert character
 				DeleteSelection();
 				if (InsertChar(CursorPosition, ch))
 				{
@@ -610,6 +630,7 @@ namespace Myra.Graphics2D.UI
 			ResetSelection();
 		}
 
+		// Performs undo or redo by applying the opposite operation from one stack and pushing to the other
 		private void UndoRedo(UndoRedoStack undoStack, UndoRedoStack redoStack)
 		{
 			if (undoStack.Stack.Count == 0)
@@ -620,15 +641,18 @@ namespace Myra.Graphics2D.UI
 			var record = undoStack.Stack.Pop();
 			try
 			{
+				// Prevent redo stack reset while executing undo/redo to maintain redo chain
 				_suppressRedoStackReset = true;
 				switch (record.OperationType)
 				{
 					case OperationType.Insert:
+						// Undo insert: delete the inserted text and record as redo
 						redoStack.MakeDelete(Text, record.Where, record.Length);
 						DeleteChars(record.Where, record.Length);
 						UserSetCursorPosition(record.Where);
 						break;
 					case OperationType.Delete:
+						// Undo delete: re-insert the deleted text and record as redo
 						if (InsertChars(record.Where, record.Data))
 						{
 							redoStack.MakeInsert(record.Where, record.Data.Length);
@@ -636,6 +660,7 @@ namespace Myra.Graphics2D.UI
 						}
 						break;
 					case OperationType.Replace:
+						// Undo replace: restore original text and record as redo
 						redoStack.MakeReplace(Text, record.Where, record.Length, record.Data.Length());
 						DeleteChars(record.Where, record.Length);
 						InsertChars(record.Where, record.Data);
@@ -650,16 +675,19 @@ namespace Myra.Graphics2D.UI
 			ResetSelection();
 		}
 
+		// Undoes the last text modification
 		private void Undo()
 		{
 			UndoRedo(UndoStack, RedoStack);
 		}
 
+		// Redoes the last undone text modification
 		private void Redo()
 		{
 			UndoRedo(RedoStack, UndoStack);
 		}
 
+		// Sets cursor position, clamping to valid text range [0, Length]
 		private void UserSetCursorPosition(int newPosition)
 		{
 			if (newPosition > Length)
@@ -675,16 +703,19 @@ namespace Myra.Graphics2D.UI
 			CursorPosition = newPosition;
 		}
 
+		// Collapses selection: sets both start and end to cursor position
 		private void ResetSelection()
 		{
 			SelectStart = SelectEnd = CursorPosition;
 		}
 
+		// Extends selection: moves end to cursor position, keeping start fixed
 		private void UpdateSelection()
 		{
 			SelectEnd = CursorPosition;
 		}
 
+		// Updates selection based on shift key state: if shift held, extend; otherwise reset
 		private void UpdateSelectionIfShiftDown()
 		{
 			if (Desktop.IsShiftDown)
@@ -697,6 +728,7 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Moves cursor up or down one line while maintaining horizontal position (preferredX)
 		private void MoveLine(int delta)
 		{
 			var line = _richTextLayout.GetLineByCursorPosition(CursorPosition);
@@ -713,9 +745,9 @@ namespace Myra.Graphics2D.UI
 
 			var bounds = ActualBounds;
 			var pos = GetRenderPositionByIndex(CursorPosition);
-			var preferredX = pos.X - bounds.X;
+			var preferredX = pos.X - bounds.X;  // Remember horizontal position
 
-			// Find closest glyph
+			// Find the glyph at the target line closest to the preferred X position
 			var newString = _richTextLayout.Lines[newLine];
 			var cursorPosition = newString.TextStartIndex;
 			var glyphIndex = newString.GetGlyphIndexByX(preferredX);
@@ -740,6 +772,8 @@ namespace Myra.Graphics2D.UI
 
 		/// <summary>
 		/// Called when a keyboard key is pressed while the text box has focus.
+		/// Handles standard text editing operations: copy/paste/cut, undo/redo, navigation,
+		/// text deletion, selection, and special keys like Insert, Home, End, etc.
 		/// </summary>
 		/// <param name="k">The key that was pressed.</param>
 		public override void OnKeyDown(Keys k)
@@ -965,6 +999,7 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Copies selected text to clipboard, falling back to internal clipboard on failure
 		private void Copy()
 		{
 			if (SelectEnd != SelectStart)
@@ -979,14 +1014,15 @@ namespace Myra.Graphics2D.UI
 				}
 				catch (Exception)
 				{
+					// Fallback if system clipboard is unavailable
 					MyraEnvironment.InternalClipboard = clipboardText;
 				}
 			}
 		}
 
+		// Normalizes text by removing carriage returns (converts CRLF to LF)
 		private static string Process(string value)
 		{
-			// Remove '\r'
 			if (value != null)
 			{
 				value = value.Replace("\r", string.Empty);
@@ -995,6 +1031,8 @@ namespace Myra.Graphics2D.UI
 			return value;
 		}
 
+		// Sets text content, optionally firing events and managing undo stack
+		// byUser=true indicates text was entered by user (not programmatic change)
 		private bool SetText(string value, bool byUser)
 		{
 			value = Process(value);
@@ -1004,6 +1042,7 @@ namespace Myra.Graphics2D.UI
 			}
 
 			var oldValue = _text;
+			// Fire ValueChanging event to allow cancellation or modification
 			if (ValueChanging != null)
 			{
 				var args = new ValueChangingEventArgs<string>(oldValue, value);
@@ -1018,13 +1057,16 @@ namespace Myra.Graphics2D.UI
 
 			_text = value;
 
+			// Update layout to reflect new text (handles password masking, etc.)
 			UpdateRichTextLayout();
 
+			// Reset cursor and selection only if text was set programmatically
 			if (!byUser)
 			{
 				CursorPosition = SelectStart = SelectEnd = 0;
 			}
 
+			// Reset redo stack on any programmatic text change (unless suppressed during undo/redo)
 			if (!_suppressRedoStackReset)
 			{
 				RedoStack.Reset();
@@ -1032,8 +1074,10 @@ namespace Myra.Graphics2D.UI
 
 			InvalidateMeasure();
 
+			// Fire TextChanged event (always)
 			TextChanged?.Invoke(this, new ValueChangedEventArgs<string>(oldValue, value));
 
+			// Fire TextChangedByUser event (only for user input)
 			if (byUser)
 			{
 				TextChangedByUser?.Invoke(this, new ValueChangedEventArgs<string>(oldValue, value));
@@ -1042,6 +1086,7 @@ namespace Myra.Graphics2D.UI
 			return true;
 		}
 
+		// Updates the layout text: masks password fields and manages hint text display
 		private void UpdateRichTextLayout()
 		{
 			if (string.IsNullOrEmpty(_text))
@@ -1052,9 +1097,11 @@ namespace Myra.Graphics2D.UI
 			}
 
 			DisableHintText();
+			// If password field, replace all characters with asterisks for security
 			_richTextLayout.Text = PasswordField ? new string('*', _text.Length) : _text;
 		}
 
+		// Hides hint text and shows actual text
 		private void DisableHintText()
 		{
 			if (_hintText == null)
@@ -1066,6 +1113,7 @@ namespace Myra.Graphics2D.UI
 			HintTextEnabled = false;
 		}
 
+		// Shows hint text if conditions are met (empty text, unfocused)
 		private void EnableHintText()
 		{
 			if (ShouldEnableHintText())
@@ -1075,6 +1123,7 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Hint text should be shown when: hint is defined, text is empty, and textbox is not focused
 		private bool ShouldEnableHintText()
 		{
 			return _hintText != null &&
@@ -1082,6 +1131,9 @@ namespace Myra.Graphics2D.UI
 				   && !IsKeyboardFocused;
 		}
 
+		// Ensures the cursor is visible by scrolling the text box content if necessary.
+		// Handles both internal scrolling and parent ScrollViewer scrolling.
+		// Calculates visible viewport dimensions and adjusts scroll position to keep cursor in view.
 		private void UpdateScrolling()
 		{
 			var p = GetRenderPositionByIndex(CursorPosition);
@@ -1094,10 +1146,12 @@ namespace Myra.Graphics2D.UI
 
 			var asScrollViewer = Parent as ScrollViewer;
 
+			// Calculate viewport dimensions: available space for showing text
 			Point sz, maximum;
 			var bounds = ActualBounds;
 			if (asScrollViewer != null)
 			{
+				// If parent is ScrollViewer, use its dimensions minus scrollbar widths
 				sz = new Point(asScrollViewer.Bounds.Width, asScrollViewer.Bounds.Height);
 				sz.X -= asScrollViewer.VerticalThumbWidth;
 				sz.Y -= asScrollViewer.HorizontalThumbHeight;
@@ -1106,6 +1160,7 @@ namespace Myra.Graphics2D.UI
 			}
 			else
 			{
+				// Otherwise use our own bounds for internal scrolling
 				sz = new Point(Bounds.Width, Bounds.Height);
 				maximum = new Point(_richTextLayout.Size.X + CursorWidth - sz.X,
 					_richTextLayout.Size.Y - sz.Y);
@@ -1121,6 +1176,7 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// No scrolling needed if content fits entirely in viewport
 			if (maximum == Mathematics.PointZero)
 			{
 				_internalScrolling = Mathematics.PointZero;
@@ -1128,11 +1184,13 @@ namespace Myra.Graphics2D.UI
 				return;
 			}
 
+			// Convert cursor position to local coordinates relative to bounds
 			p.X -= bounds.X;
 			p.Y -= bounds.Y;
 
 			var lineHeight = _richTextLayout.Font.LineHeight;
 
+			// Get current scroll position from parent or internal scrolling
 			Point sp;
 			if (asScrollViewer != null)
 			{
@@ -1143,26 +1201,34 @@ namespace Myra.Graphics2D.UI
 				sp = _internalScrolling;
 			}
 
+			// Scroll vertically: ensure cursor line is visible within viewport
 			if (p.Y < sp.Y)
 			{
+				// Cursor above viewport: scroll up
 				sp.Y = p.Y;
 			}
 			else if (p.Y + lineHeight > sp.Y + sz.Y)
 			{
+				// Cursor below viewport: scroll down to show line at bottom
 				sp.Y = p.Y + lineHeight - sz.Y;
 			}
 
+			// Scroll horizontally: ensure cursor is visible within viewport
 			if (p.X < sp.X)
 			{
+				// Cursor left of viewport: scroll left
 				sp.X = p.X;
 			}
 			else if (p.X + CursorWidth > sp.X + sz.X)
 			{
+				// Cursor right of viewport: scroll right to show cursor at edge
 				sp.X = p.X + CursorWidth - sz.X;
 			}
 
+			// Apply bounds checking and update scroll position on parent or internally
 			if (asScrollViewer != null)
 			{
+				// Clamp scroll position to valid range [0, maximum]
 				if (sp.X < 0)
 				{
 					sp.X = 0;
@@ -1187,6 +1253,7 @@ namespace Myra.Graphics2D.UI
 			}
 			else
 			{
+				// Clamp internal scrolling to valid range
 				if (sp.X < 0)
 				{
 					sp.X = 0;
@@ -1213,12 +1280,16 @@ namespace Myra.Graphics2D.UI
 			_lastCursorPosition = p;
 		}
 
+		// Called whenever the cursor position changes. Resets cursor blink timing, scrolls viewport to keep cursor visible, and fires position-changed event.
 		private void OnCursorIndexChanged()
 		{
+			// Reset blink animation: cursor movement makes cursor appear immediately
 			_lastCursorUpdate = DateTime.Now;
-			
+
+			// Ensure cursor is visible in viewport by scrolling if needed
 			UpdateScrolling();
 
+			// Notify listeners that cursor position has changed
 			CursorPositionChanged.Invoke(this, InputEventType.CursorPositionChanged);
 		}
 
@@ -1241,6 +1312,7 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Sets cursor position based on touch/click coordinates, with optional selection extension
 		private void SetCursorByTouch()
 		{
 			if (Desktop == null)
@@ -1249,9 +1321,11 @@ namespace Myra.Graphics2D.UI
 			}
 
 			var mousePos = ToLocal(Desktop.TouchPosition.Value);
+			// Account for internal scrolling offset
 			mousePos.X += _internalScrolling.X;
 			mousePos.Y += _internalScrolling.Y;
 
+			// Clamp position to valid bounds
 			if (mousePos.X < 0)
 			{
 				mousePos.X = 0;
@@ -1262,6 +1336,7 @@ namespace Myra.Graphics2D.UI
 				mousePos.Y = 0;
 			}
 
+			// Find which line the touch is on, then find the glyph at that X position
 			var line = _richTextLayout.GetLineByY(mousePos.Y);
 			if (line != null)
 			{
@@ -1269,6 +1344,7 @@ namespace Myra.Graphics2D.UI
 				if (glyphIndex != null)
 				{
 					UserSetCursorPosition(line.TextStartIndex + glyphIndex.Value);
+					// Extend selection if dragging or shift is held, otherwise reset selection
 					if (_isTouchDown || Desktop.IsShiftDown)
 					{
 						UpdateSelection();
@@ -1281,11 +1357,13 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		// Handles end of touch/drag operation
 		private void DesktopTouchUp(object sender, MyraEventArgs args)
 		{
 			_isTouchDown = false;
 		}
 
+		// Handles start of touch/drag operation
 		private void DesktopTouchDown(object sender, MyraEventArgs e)
 		{
 			if (!Enabled || !IsTouchInside || Length == 0)
@@ -1301,6 +1379,7 @@ namespace Myra.Graphics2D.UI
 
 		/// <summary>
 		/// Called when the text box receives a double-tap touch event, selecting the word at the tap position.
+		/// Double-clicking on whitespace or when shift is held does nothing.
 		/// </summary>
 		public override void OnTouchDoubleClick()
 		{
@@ -1312,6 +1391,7 @@ namespace Myra.Graphics2D.UI
 				return;
 			}
 
+			// If cursor is on whitespace, move to adjacent non-whitespace
 			if (char.IsWhiteSpace(Text[position]))
 			{
 				if (position == 0)
@@ -1326,9 +1406,11 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// Find word boundaries by scanning for whitespace in both directions
 			int start, end;
 			start = end = position;
 
+			// Find start of word (scan left until whitespace)
 			while (start > 0)
 			{
 				if (char.IsWhiteSpace(Text[start]))
@@ -1340,6 +1422,7 @@ namespace Myra.Graphics2D.UI
 				--start;
 			}
 
+			// Find end of word (scan right until whitespace)
 			while (end < Text.Length)
 			{
 				if (char.IsWhiteSpace(Text[end]))
@@ -1355,37 +1438,47 @@ namespace Myra.Graphics2D.UI
 				return;
 			}
 
+			// Select the word
 			SelectStart = start;
 			SelectEnd = end;
 		}
 
 		/// <summary>
 		/// Called when the text box receives keyboard focus.
+		/// Resets cursor blink state and hides hint text if present.
 		/// </summary>
 		public override void OnGotKeyboardFocus()
 		{
 			base.OnGotKeyboardFocus();
 
+			// Reset blink animation: show cursor immediately
 			_lastBlinkStamp = DateTime.Now;
 			_cursorOn = true;
 
+			// Hide hint text when focused
 			DisableHintText();
 		}
 
 		/// <summary>
 		/// Called when the text box loses keyboard focus.
+		/// Shows hint text if text is empty.
 		/// </summary>
 		public override void OnLostKeyboardFocus()
 		{
 			base.OnLostKeyboardFocus();
 
+			// Show hint text if conditions are met
 			EnableHintText();
 		}
 
+		// Calculates the screen position of the cursor for the given text index.
+		// Handles edge cases: index within text (use glyph info), after last glyph (position after last char),
+		// and empty lines (position at start of empty line). Returns coordinates in screen space.
 		private Point GetRenderPositionByIndex(int index)
 		{
 			var bounds = ActualBounds;
 
+			// Start at textbox origin
 			var x = bounds.X;
 			var y = bounds.Y;
 
@@ -1393,6 +1486,7 @@ namespace Myra.Graphics2D.UI
 			{
 				if (index < Text.Length)
 				{
+					// Index is within text: get glyph info and use its position
 					var glyphRender = _richTextLayout.GetGlyphInfoByIndex(index);
 					if (glyphRender != null)
 					{
@@ -1402,10 +1496,11 @@ namespace Myra.Graphics2D.UI
 				}
 				else if (_richTextLayout.Lines != null && _richTextLayout.Lines.Count > 0)
 				{
-					// After last glyph
+					// Index is at or past end of text: position cursor after last glyph or on empty last line
 					var lastLine = _richTextLayout.Lines[_richTextLayout.Lines.Count - 1];
 					if (lastLine.Count > 0)
 					{
+						// Last line has glyphs: position after the last glyph
 						var glyphRender = lastLine.GetGlyphInfoByIndex(lastLine.Count - 1);
 
 						x += glyphRender.Value.Bounds.Left + glyphRender.Value.XAdvance;
@@ -1413,6 +1508,7 @@ namespace Myra.Graphics2D.UI
 					}
 					else if (_richTextLayout.Lines.Count > 1)
 					{
+						// Last line is empty: position at start of empty line below previous line
 						var previousLine = _richTextLayout.Lines[_richTextLayout.Lines.Count - 2];
 						if (previousLine.Count > 0)
 						{
@@ -1426,23 +1522,31 @@ namespace Myra.Graphics2D.UI
 			return new Point(x, y);
 		}
 
+		// Draws selection highlight rectangles over selected text.
+		// Handles multi-line selections by drawing one rectangle per line of text.
+		// For single-line selections, draws one rectangle. For multi-line, draws full-width
+		// rectangles on intermediate lines and partial rectangles on first/last lines.
 		private void RenderSelection(RenderContext context)
 		{
 			var bounds = ActualBounds;
 
+			// Skip rendering if no text or no selection brush
 			if (string.IsNullOrEmpty(Text) || Selection == null)
 			{
 				return;
 			}
 
+			// Normalize selection: ensure selectStart <= selectEnd
 			var selectStart = Math.Min(SelectStart, SelectEnd);
 			var selectEnd = Math.Max(SelectStart, SelectEnd);
 
+			// Skip if no actual selection
 			if (selectStart >= selectEnd)
 			{
 				return;
 			}
 
+			// Get starting glyph to determine initial line
 			var startGlyph = _richTextLayout.GetGlyphInfoByIndex(selectStart);
 			if (startGlyph == null)
 			{
@@ -1455,6 +1559,7 @@ namespace Myra.Graphics2D.UI
 			var lineHeight = _richTextLayout.Font.LineHeight;
 			while (true)
 			{
+				// Get glyph at current position in selection
 				startGlyph = _richTextLayout.GetGlyphInfoByIndex(i);
 				if (startGlyph == null)
 				{
@@ -1465,8 +1570,10 @@ namespace Myra.Graphics2D.UI
 
 				var line = _richTextLayout.Lines[startGlyph.Value.TextChunk.LineIndex];
 
+				// Check if selection ends on this line
 				if (selectEnd < line.TextStartIndex + line.Count)
 				{
+					// Single-line selection: draw from start to end within this line
 					var endPosition = GetRenderPositionByIndex(selectEnd);
 
 					Selection.Draw(context,
@@ -1478,12 +1585,14 @@ namespace Myra.Graphics2D.UI
 					break;
 				}
 
+				// Multi-line selection: draw from start position to end of this line
 				Selection.Draw(context,
 					new Rectangle(startPosition.X - _internalScrolling.X,
 						startPosition.Y - _internalScrolling.Y,
 						bounds.Left + startGlyph.Value.TextChunk.Size.X - startPosition.X,
 						lineHeight));
 
+				// Move to next line
 				++lineIndex;
 				if (lineIndex >= _richTextLayout.Lines.Count)
 				{
@@ -1496,6 +1605,7 @@ namespace Myra.Graphics2D.UI
 
 		/// <summary>
 		/// Renders the text box's content, including text, cursor, and selection.
+		/// Handles text color selection (normal/disabled/focused), cursor blinking, and selection highlighting.
 		/// </summary>
 		/// <param name="context">The render context to draw with.</param>
 		public override void InternalRender(RenderContext context)
@@ -1505,9 +1615,9 @@ namespace Myra.Graphics2D.UI
 				return;
 			}
 
+			// Handle continuous scrolling when touch/drag is outside bounds
 			if (_isTouchDown)
 			{
-				// This makes the text to scroll if the touch is outside of the TextBox bounds
 				var passed = DateTime.Now - _lastCursorUpdate;
 				if (passed.TotalMilliseconds > CursorUpdateDelayInMs)
 				{
@@ -1519,28 +1629,35 @@ namespace Myra.Graphics2D.UI
 			var bounds = ActualBounds;
 			RenderSelection(context);
 
+			// Determine text color based on state: hint/disabled/focused
 			var textColor = TextColor;
 			var oldOpacity = context.Opacity;
 
 			if (HintTextEnabled)
 			{
+				// Hint text is semi-transparent
 				context.Opacity *= 0.5f;
 			}
 			else if (!Enabled && DisabledTextColor != null)
 			{
+				// Use special color for disabled state
 				textColor = DisabledTextColor.Value;
 			}
 			else if (IsKeyboardFocused && FocusedTextColor != null)
 			{
+				// Use special color when focused
 				textColor = FocusedTextColor.Value;
 			}
 
+			// Align text within bounds based on TextVerticalAlignment
 			var centeredBounds = LayoutUtils.Align(new Point(bounds.Width, bounds.Height), _richTextLayout.Size, HorizontalAlignment.Left, TextVerticalAlignment);
 			centeredBounds.Offset(bounds.Location);
 
+			// Apply internal scrolling offset to position calculation
 			var p = new Point(centeredBounds.Location.X - _internalScrolling.X,
 				centeredBounds.Location.Y - _internalScrolling.Y);
 
+			// Debug visualization: draw glyph bounding boxes
 			if (MyraEnvironment.DrawTextGlyphsFrames)
 			{
 				foreach (var line in _richTextLayout.Lines)
@@ -1557,28 +1674,34 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// Draw the text
 			context.DrawRichText(_richTextLayout, new Vector2(p.X, p.Y), textColor);
 
+			// Skip cursor rendering if textbox doesn't have focus
 			if (!IsKeyboardFocused)
 			{
-				// Skip cursor rendering if the widget doesnt have the focus
+				context.Opacity = oldOpacity;
 				return;
 			}
 
+			// Update cursor blink animation state
 			var now = DateTime.Now;
-			
+
 			if (_lastCursorUpdate > _lastBlinkStamp)
 			{
+				// Cursor movement resets blink: show cursor immediately
 				_lastBlinkStamp = _lastCursorUpdate;
 				_cursorOn = true;
 			}
-			
+
+			// Toggle cursor visibility based on blink interval
 			if ((now - _lastBlinkStamp).TotalMilliseconds >= BlinkIntervalInMs)
 			{
 				_cursorOn = !_cursorOn;
 				_lastBlinkStamp = now;
 			}
 
+			// Draw the cursor image at the current position
 			if (Enabled && _cursorOn && Cursor != null)
 			{
 				p = GetRenderPositionByIndex(CursorPosition);
@@ -1595,6 +1718,7 @@ namespace Myra.Graphics2D.UI
 
 		/// <summary>
 		/// Measures the size required to display the text box contents.
+		/// Accounts for text wrapping, cursor width, and minimum line height.
 		/// </summary>
 		/// <param name="availableSize">The available size for the text box.</param>
 		/// <returns>The measured size needed for the text box.</returns>
@@ -1608,17 +1732,20 @@ namespace Myra.Graphics2D.UI
 			var width = availableSize.X;
 			width -= CursorWidth;
 
+			// Measure text with or without wrapping depending on Wrap property
 			var result = Mathematics.PointZero;
 			if (Font != null)
 			{
 				result = _richTextLayout.Measure(_wrap ? width : default(int?));
 			}
 
+			// Ensure minimum height for at least one line of text
 			if (result.Y < Font.LineHeight)
 			{
 				result.Y = Font.LineHeight;
 			}
 
+			// Account for cursor width in total size
 			if (Cursor != null)
 			{
 				result.X += CursorWidth;
@@ -1630,6 +1757,7 @@ namespace Myra.Graphics2D.UI
 
 		/// <summary>
 		/// Arranges the text box's content within its bounds.
+		/// Sets the layout width for text wrapping.
 		/// </summary>
 		protected override void InternalArrange()
 		{
@@ -1638,6 +1766,7 @@ namespace Myra.Graphics2D.UI
 			var width = ActualBounds.Width;
 			width -= CursorWidth;
 
+			// Set wrapping width for layout engine: null means no wrapping
 			_richTextLayout.Width = _wrap ? width : default(int?);
 		}
 

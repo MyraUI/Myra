@@ -167,7 +167,6 @@ namespace Myra.Graphics2D.UI
 		/// <param name="context">The render context.</param>
 		public override void InternalRender(RenderContext context)
 		{
-
 			base.InternalRender(context);
 
 			if (!ShowGridLines)

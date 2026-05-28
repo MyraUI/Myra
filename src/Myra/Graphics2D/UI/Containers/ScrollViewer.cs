@@ -567,22 +567,28 @@ namespace Myra.Graphics2D.UI
 		/// </summary>
 		protected override void InternalArrange()
 		{
+			// Exit if there's no content to arrange
 			if (Content == null)
 			{
 				return;
 			}
 
+			// Get the available space and measure content without scrollbar space constraints
 			var bounds = ActualBounds;
 			var availableSize = bounds.Size();
 			var oldMeasureSize = Content.Measure(availableSize);
 
+			// Determine if scrolling is needed in either direction by comparing content size to available space
 			_horizontalScrollingOn = oldMeasureSize.X > bounds.Width;
 			_verticalScrollingOn = oldMeasureSize.Y > bounds.Height;
+
+			// If any scrolling is required, recalculate layout accounting for scrollbar dimensions
 			if (_horizontalScrollingOn || _verticalScrollingOn)
 			{
 				var vsWidth = VerticalScrollbarWidth;
 				var hsHeight = HorizontalScrollbarHeight;
 
+				// Reduce available vertical space if horizontal scrollbar will be shown
 				if (_horizontalScrollingOn && ShowHorizontalScrollBar)
 				{
 					availableSize.Y -= hsHeight;
@@ -593,6 +599,7 @@ namespace Myra.Graphics2D.UI
 					}
 				}
 
+				// Reduce available horizontal space if vertical scrollbar will be shown
 				if (_verticalScrollingOn && ShowVerticalScrollBar)
 				{
 					availableSize.X -= vsWidth;
@@ -603,15 +610,19 @@ namespace Myra.Graphics2D.UI
 					}
 				}
 
-				// Remeasure with scrollbars
+				// Re-measure content with scrollbar space subtracted to get true content dimensions
 				var measureSize = Content.Measure(availableSize);
+				// Available width for horizontal scrollbar (reduced if vertical scrollbar is shown)
 				var bw = bounds.Width - (_verticalScrollingOn && ShowVerticalScrollBar ? vsWidth : 0);
 
+				// Position horizontal scrollbar frame at the bottom of the bounds
 				_horizontalScrollbarFrame = new Rectangle(bounds.Left,
 					bounds.Bottom - hsHeight,
 					bw,
 					hsHeight);
 
+				// Calculate horizontal scrollbar thumb width to proportionally represent scrollable content
+				// Thumb size = (visible width / content width) * scrollbar width, with minimum knob size
 				var mw = measureSize.X;
 				if (mw == 0)
 				{
@@ -623,14 +634,18 @@ namespace Myra.Graphics2D.UI
 					Math.Max(HorizontalScrollKnob.Size.X, bw * bw / mw),
 					HorizontalScrollKnob.Size.Y);
 
+				// Available height for vertical scrollbar (reduced if horizontal scrollbar is shown)
 				var bh = bounds.Height - (_horizontalScrollingOn ? hsHeight : 0);
 
+				// Position vertical scrollbar frame on the right edge of the bounds
 				_verticalScrollbarFrame = new Rectangle(
 					bounds.Left + bounds.Width - vsWidth,
 					bounds.Top,
 					vsWidth,
 					bh);
 
+				// Calculate vertical scrollbar thumb height to proportionally represent scrollable content
+				// Thumb size = (visible height / content height) * scrollbar height, with minimum knob size
 				var mh = measureSize.Y;
 				if (mh == 0)
 				{
@@ -643,9 +658,11 @@ namespace Myra.Graphics2D.UI
 					VerticalScrollKnob.Size.X,
 					Math.Max(VerticalScrollKnob.Size.Y, bh * bh / mh));
 
+				// Calculate maximum travel distance for scrollbar thumbs (range where thumb can slide)
 				_thumbMaximumX = bw - _horizontalScrollbarThumb.Width;
 				_thumbMaximumY = bh - _verticalScrollbarThumb.Height;
 
+				// Prevent division by zero when mapping scroll position to thumb position
 				if (_thumbMaximumX == 0)
 				{
 					_thumbMaximumX = 1;
@@ -656,6 +673,7 @@ namespace Myra.Graphics2D.UI
 					_thumbMaximumY = 1;
 				}
 
+				// Set content bounds to allow scrolling: use measured size if scrollable, otherwise constrain to available space
 				if (_horizontalScrollingOn && ShowHorizontalScrollBar)
 				{
 					bounds.Width = measureSize.X;
@@ -675,9 +693,10 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// Arrange the content widget with the calculated bounds
 			Content.Arrange(bounds);
 
-			// Fit scroll position in new maximums
+			// Clamp scroll position to ensure it doesn't exceed the new maximum scrollable distance
 			var scrollPosition = ScrollPosition;
 			if (scrollPosition.X > ScrollMaximum.X)
 			{

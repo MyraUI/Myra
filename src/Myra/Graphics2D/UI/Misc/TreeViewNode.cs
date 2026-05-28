@@ -139,11 +139,6 @@ namespace Myra.Graphics2D.UI
 			UpdateMark();
 		}
 
-		private void MarkOnUp(object sender, MyraEventArgs args)
-		{
-			_childNodesStackPanel.Visible = false;
-		}
-
 		/// <summary>
 		/// Updates the visibility of the mark (expand/collapse button) based on the number of child nodes.
 		/// </summary>

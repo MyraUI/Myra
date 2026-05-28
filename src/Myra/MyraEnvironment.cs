@@ -236,7 +236,7 @@ namespace Myra
 			{
 				if (_defaultAssetManager == null)
 				{
-					_defaultAssetManager = AssetManager.CreateFileAssetManager(PathUtils.ExecutingAssemblyDirectory);
+					_defaultAssetManager = AssetManager.CreateFileAssetManager(AppContext.BaseDirectory);
 				}
 
 				return _defaultAssetManager;

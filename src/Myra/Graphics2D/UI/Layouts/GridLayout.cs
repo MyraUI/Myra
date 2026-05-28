@@ -16,7 +16,7 @@ namespace Myra.Graphics2D.UI
 	/// <summary>
 	/// A layout system that arranges widgets in a grid with configurable rows and columns.
 	/// </summary>
-	public class GridLayout: ILayout
+	public class GridLayout : ILayout
 	{
 		private readonly List<int> _measureColWidths = new List<int>();
 		private readonly List<int> _measureRowHeights = new List<int>();
@@ -277,6 +277,7 @@ namespace Myra.Graphics2D.UI
 			var rows = 0;
 			var columns = 0;
 
+			// Collect visible widgets and determine grid dimensions from their positions and spans
 			_visibleWidgets.Clear();
 			foreach (var child in widgets)
 			{
@@ -285,12 +286,14 @@ namespace Myra.Graphics2D.UI
 					_visibleWidgets.Add(child);
 
 					var gridPosition = GetActualGridPosition(child);
+					// Calculate rightmost column occupied by this widget (position + span)
 					var c = gridPosition.X + Math.Max(Grid.GetColumnSpan(child), 1);
 					if (c > columns)
 					{
 						columns = c;
 					}
 
+					// Calculate bottommost row occupied by this widget (position + span)
 					var r = gridPosition.Y + Math.Max(Grid.GetRowSpan(child), 1);
 					if (r > rows)
 					{
@@ -299,6 +302,7 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// Ensure grid dimensions match defined proportions (in case some rows/cols have no widgets)
 			if (ColumnsProportions.Count > columns)
 			{
 				columns = ColumnsProportions.Count;
@@ -309,6 +313,7 @@ namespace Myra.Graphics2D.UI
 				rows = RowsProportions.Count;
 			}
 
+			// Initialize measurement arrays: one entry per column and row, initially all zero
 			_measureColWidths.Clear();
 			int i;
 			for (i = 0; i < columns; ++i)
@@ -322,7 +327,7 @@ namespace Myra.Graphics2D.UI
 				_measureRowHeights.Add(0);
 			}
 
-			// Put all visible widget into 2d array
+			// Build 2D grid mapping to quickly find all widgets at each grid position
 			if (_widgetsByGridPosition == null ||
 				_widgetsByGridPosition.GetLength(0) < rows ||
 				_widgetsByGridPosition.GetLength(1) < columns)
@@ -343,14 +348,17 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// Map each visible widget to its grid position
 			foreach (var widget in _visibleWidgets)
 			{
 				_widgetsByGridPosition[Grid.GetRow(widget), Grid.GetColumn(widget)].Add(widget);
 			}
 
+			// Subtract spacing from available size to get space actually available for content
 			availableSize.X -= (_measureColWidths.Count - 1) * ColumnSpacing;
 			availableSize.Y -= (_measureRowHeights.Count - 1) * RowSpacing;
 
+			// Measure each grid cell's content to determine column widths and row heights
 			for (var row = 0; row < rows; ++row)
 			{
 				for (var col = 0; col < columns; ++col)
@@ -358,11 +366,13 @@ namespace Myra.Graphics2D.UI
 					var rowProportion = GetRowProportion(row);
 					var colProportion = GetColumnProportion(col);
 
+					// Fixed-size columns have explicit pixel width
 					if (colProportion.Type == ProportionType.Pixels)
 					{
 						_measureColWidths[col] = (int)colProportion.Value;
 					}
 
+					// Fixed-size rows have explicit pixel height
 					if (rowProportion.Type == ProportionType.Pixels)
 					{
 						_measureRowHeights[row] = (int)rowProportion.Value;
@@ -373,6 +383,7 @@ namespace Myra.Graphics2D.UI
 					{
 						var gridPosition = GetActualGridPosition(widget);
 
+						// Measure widget only if cell isn't already fixed-size in both dimensions
 						var measuredSize = Mathematics.PointZero;
 						if (rowProportion.Type != ProportionType.Pixels ||
 							colProportion.Type != ProportionType.Pixels)
@@ -380,21 +391,25 @@ namespace Myra.Graphics2D.UI
 							measuredSize = widget.Measure(availableSize);
 						}
 
+						// Ignore measured width for widgets spanning multiple columns (handled elsewhere)
 						if (Grid.GetColumnSpan(widget) != 1)
 						{
 							measuredSize.X = 0;
 						}
 
+						// Ignore measured height for widgets spanning multiple rows (handled elsewhere)
 						if (Grid.GetRowSpan(widget) != 1)
 						{
 							measuredSize.Y = 0;
 						}
 
+						// Update column width to accommodate the largest widget in that column
 						if (measuredSize.X > _measureColWidths[col] && colProportion.Type != ProportionType.Pixels)
 						{
 							_measureColWidths[col] = measuredSize.X;
 						}
 
+						// Update row height to accommodate the largest widget in that row
 						if (measuredSize.Y > _measureRowHeights[row] && rowProportion.Type != ProportionType.Pixels)
 						{
 							_measureRowHeights[row] = measuredSize.Y;
@@ -403,15 +418,17 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
-			// #181: All Part proportions must have maximum size
+			// Normalize Part proportions: all Part columns/rows with same value should have same size
 			LayoutProcessFixedPart();
 
+			// Calculate total desired grid size by summing all column widths, row heights, and spacing
 			var result = Mathematics.PointZero;
 			for (i = 0; i < _measureColWidths.Count; ++i)
 			{
 				var w = _measureColWidths[i];
 
 				result.X += w;
+				// Add spacing between columns (not after the last column)
 				if (i < _measureColWidths.Count - 1)
 				{
 					result.X += ColumnSpacing;
@@ -423,6 +440,7 @@ namespace Myra.Graphics2D.UI
 				var h = _measureRowHeights[i];
 				result.Y += h;
 
+				// Add spacing between rows (not after the last row)
 				if (i < _measureRowHeights.Count - 1)
 				{
 					result.Y += RowSpacing;
@@ -439,8 +457,10 @@ namespace Myra.Graphics2D.UI
 		/// <param name="bounds">The bounds in which to arrange the widgets.</param>
 		public void Arrange(IEnumerable<Widget> widgets, Rectangle bounds)
 		{
+			// Measure to determine initial (unconstrained) column widths and row heights
 			Measure(widgets, bounds.Size());
 
+			// Copy measured sizes into working arrays for final adjustments
 			ColWidths.Clear();
 			for (var i = 0; i < _measureColWidths.Count; ++i)
 			{
@@ -453,11 +473,11 @@ namespace Myra.Graphics2D.UI
 				RowHeights.Add(_measureRowHeights[i]);
 			}
 
-			// Partition available space
+			// Distribute actual available space among columns and rows based on their proportion types
 			int row, col;
 
-			// Dynamic widths
-			// First run: calculate available width
+			// Calculate column widths: account for fixed sizes, distribute remaining space to dynamic columns
+			// First pass: subtract fixed-size columns and sum all Part proportion weights
 			var availableWidth = (float)bounds.Width;
 			availableWidth -= (ColWidths.Count - 1) * ColumnSpacing;
 
@@ -466,26 +486,28 @@ namespace Myra.Graphics2D.UI
 			{
 				var colWidth = ColWidths[col];
 				var prop = GetColumnProportion(col);
+				// Auto and Pixels proportions are fixed, remove their space from available
 				if (prop.Type == ProportionType.Auto || prop.Type == ProportionType.Pixels)
 				{
-					// Fixed width
 					availableWidth -= colWidth;
 				}
 				else
 				{
+					// Accumulate Part proportion weights for distribution
 					totalPart += prop.Value;
 				}
 			}
 
+			// Second pass: allocate remaining space to Part proportions based on their relative weights
 			if (!totalPart.IsZero())
 			{
-				// Second run update dynamic widths
 				var tookSpace = 0.0f;
 				for (col = 0; col < ColWidths.Count; ++col)
 				{
 					var prop = GetColumnProportion(col);
 					if (prop.Type == ProportionType.Part)
 					{
+						// Width = (this part's weight / total weight) * available space
 						ColWidths[col] = (int)(prop.Value * availableWidth / totalPart);
 						tookSpace += ColWidths[col];
 					}
@@ -494,7 +516,7 @@ namespace Myra.Graphics2D.UI
 				availableWidth -= tookSpace;
 			}
 
-			// Update part fill widths
+			// Third pass: Fill proportion gets all remaining space (after all other types are accounted for)
 			for (col = 0; col < ColWidths.Count; ++col)
 			{
 				var prop = GetColumnProportion(col);
@@ -505,7 +527,7 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
-			// Same with row heights
+			// Calculate row heights: same logic as columns (fixed, distribute Part, then Fill)
 			var availableHeight = (float)bounds.Height;
 			availableHeight -= (RowHeights.Count - 1) * RowSpacing;
 
@@ -514,17 +536,19 @@ namespace Myra.Graphics2D.UI
 			{
 				var colHeight = RowHeights[col];
 				var prop = GetRowProportion(col);
+				// Auto and Pixels proportions are fixed, remove their space from available
 				if (prop.Type == ProportionType.Auto || prop.Type == ProportionType.Pixels)
 				{
-					// Fixed height
 					availableHeight -= colHeight;
 				}
 				else
 				{
+					// Accumulate Part proportion weights for distribution
 					totalPart += prop.Value;
 				}
 			}
 
+			// Allocate remaining space to Part proportions based on their relative weights
 			if (!totalPart.IsZero())
 			{
 				var tookSpace = 0.0f;
@@ -533,6 +557,7 @@ namespace Myra.Graphics2D.UI
 					var prop = GetRowProportion(row);
 					if (prop.Type != ProportionType.Part) continue;
 
+					// Height = (this part's weight / total weight) * available space
 					RowHeights[row] = (int)(prop.Value * availableHeight / totalPart);
 					tookSpace += RowHeights[row];
 				}
@@ -540,7 +565,7 @@ namespace Myra.Graphics2D.UI
 				availableHeight -= tookSpace;
 			}
 
-			// Update part fill heights
+			// Fill proportion gets all remaining space (after all other types are accounted for)
 			for (row = 0; row < RowHeights.Count; ++row)
 			{
 				var prop = GetRowProportion(row);
@@ -551,47 +576,57 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 
+			// Calculate grid line positions for visual reference and hit testing
 			_actualSize = Mathematics.PointZero;
 			GridLinesX.Clear();
 			CellLocationsX.Clear();
 
 			var p = Mathematics.PointZero;
 
+			// Build X-axis cell positions and grid line markers
 			for (var i = 0; i < ColWidths.Count; ++i)
 			{
+				// Record the starting X coordinate of this cell
 				CellLocationsX.Add(p.X);
 				var w = ColWidths[i];
 				p.X += w;
 
+				// Grid line is at the middle of the spacing between columns (for visual guides)
 				if (i < ColWidths.Count - 1)
 				{
 					GridLinesX.Add(p.X + ColumnSpacing / 2);
 				}
 
+				// Advance position by spacing before next column
 				p.X += ColumnSpacing;
 
 				_actualSize.X += ColWidths[i];
 			}
 
+			// Build Y-axis cell positions and grid line markers
 			GridLinesY.Clear();
 			CellLocationsY.Clear();
 
 			for (var i = 0; i < RowHeights.Count; ++i)
 			{
+				// Record the starting Y coordinate of this cell
 				CellLocationsY.Add(p.Y);
 				var h = RowHeights[i];
 				p.Y += h;
 
+				// Grid line is at the middle of the spacing between rows (for visual guides)
 				if (i < RowHeights.Count - 1)
 				{
 					GridLinesY.Add(p.Y + RowSpacing / 2);
 				}
 
+				// Advance position by spacing before next row
 				p.Y += RowSpacing;
 
 				_actualSize.Y += RowHeights[i];
 			}
 
+			// Position each widget within its grid cell(s), respecting column/row spans
 			foreach (var control in _visibleWidgets)
 			{
 				LayoutControl(control, bounds);

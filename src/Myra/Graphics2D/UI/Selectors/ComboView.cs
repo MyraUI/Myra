@@ -22,7 +22,7 @@ namespace Myra.Graphics2D.UI
 	/// <summary>
 	/// A combo view widget that displays a list of widget items in a dropdown menu and supports selection.
 	/// </summary>
-	public class ComboView: Widget, IContainer
+	public class ComboView : Widget, IContainer
 	{
 		private readonly ToggleButton _button;
 		private readonly ListView _listView = new ListView(null);
@@ -170,7 +170,7 @@ namespace Myra.Graphics2D.UI
 			if (MyraEnvironment.EventHandlingModel == EventHandlingStrategy.EventBubbling)
 				_button.TouchDown += InternalStopPropagation;
 
-            HorizontalAlignment = HorizontalAlignment.Left;
+			HorizontalAlignment = HorizontalAlignment.Left;
 			VerticalAlignment = VerticalAlignment.Top;
 
 			DropdownMaximumHeight = 300;
@@ -183,7 +183,7 @@ namespace Myra.Graphics2D.UI
 			e.StopPropagation();
 		}
 
-        private void DesktopOnContextMenuClosed(object sender, GenericEventArgs<Widget> genericEventArgs)
+		private void DesktopOnContextMenuClosed(object sender, GenericEventArgs<Widget> genericEventArgs)
 		{
 			// Unpress the button only if mouse is outside
 			// As if it is inside, then it'll get unpressed naturally
@@ -311,7 +311,7 @@ namespace Myra.Graphics2D.UI
 			SelectionMode = comboView.SelectionMode;
 			DropdownMaximumHeight = comboView.DropdownMaximumHeight;
 
-			foreach(var child in comboView.Widgets)
+			foreach (var child in comboView.Widgets)
 			{
 				Widgets.Add(child.Clone());
 			}

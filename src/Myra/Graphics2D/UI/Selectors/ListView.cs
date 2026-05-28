@@ -494,11 +494,6 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		private void OnItemCollectionChanged()
-		{
-			_scrollViewer.ResetScroll();
-		}
-
 		private void UpdateScrolling()
 		{
 			if (SelectedItem == null)

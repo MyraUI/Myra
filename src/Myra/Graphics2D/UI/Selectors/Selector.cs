@@ -1,7 +1,6 @@
 ﻿using Myra.Attributes;
 using Myra.Events;
 using Myra.Utility;
-using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -169,7 +168,7 @@ namespace Myra.Graphics2D.UI
 		/// Initializes a new instance of the <see cref="Selector{WidgetType, ItemType}"/> class.
 		/// </summary>
 		/// <param name="widget">The widget to display and manage the items.</param>
-		protected Selector(WidgetType widget): base(widget)
+		protected Selector(WidgetType widget) : base(widget)
 		{
 			widget.HorizontalAlignment = HorizontalAlignment.Stretch;
 			widget.VerticalAlignment = VerticalAlignment.Stretch;
@@ -185,30 +184,30 @@ namespace Myra.Graphics2D.UI
 			switch (args.Action)
 			{
 				case NotifyCollectionChangedAction.Add:
-				{
-					var index = args.NewStartingIndex;
-					foreach (ItemType item in args.NewItems)
 					{
-						InsertItem(item, index);
-						++index;
+						var index = args.NewStartingIndex;
+						foreach (ItemType item in args.NewItems)
+						{
+							InsertItem(item, index);
+							++index;
+						}
+						break;
 					}
-					break;
-				}
 
 				case NotifyCollectionChangedAction.Remove:
-				{
-					foreach (ItemType item in args.OldItems)
 					{
-						RemoveItem(item);
+						foreach (ItemType item in args.OldItems)
+						{
+							RemoveItem(item);
+						}
+						break;
 					}
-					break;
-				}
 
 				case NotifyCollectionChangedAction.Reset:
-				{
-					Reset();
-					break;
-				}
+					{
+						Reset();
+						break;
+					}
 			}
 
 			OnItemCollectionChanged();

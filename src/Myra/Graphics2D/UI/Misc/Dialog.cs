@@ -98,7 +98,8 @@ namespace Myra.Graphics2D.UI
 			if (k == CloseKey)
 			{
 				CloseButton.DoClick();
-			} else if (k == ConfirmKey)
+			}
+			else if (k == ConfirmKey)
 			{
 				ButtonOk.DoClick();
 			}
