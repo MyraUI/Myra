@@ -12,6 +12,13 @@ namespace Myra.Graphics2D.UI
 	/// </summary>
 	public abstract class ButtonBase2 : ContentControl
 	{
+		public ButtonBase2 FocusNeighbourTop = null;
+		public ButtonBase2 FocusNeighbourBottom = null;
+		public ButtonBase2 FocusNeighbourLeft = null;
+		public ButtonBase2 FocusNeighbourRight = null;
+		public ButtonBase2 FocusNeighbourPrevious = null;
+		public ButtonBase2 FocusNeighbourNext = null;
+
 		private bool _isPressed = false;
 		private bool _isClicked = false;
 
