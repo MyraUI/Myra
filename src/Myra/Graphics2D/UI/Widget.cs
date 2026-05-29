@@ -1115,38 +1115,41 @@ namespace Myra.Graphics2D.UI
 			result.X += MBPWidth;
 			result.Y += MBPHeight;
 
+			var marginX = _margin.Left + _margin.Right;
+			var marginY = _margin.Top + _margin.Bottom;
+
 			// Result lerp
 			if (Width.HasValue)
 			{
-				result.X = Width.Value;
+				result.X = Width.Value + marginX;
 			}
 			else
 			{
 				if (MinWidth.HasValue && result.X < MinWidth.Value)
 				{
-					result.X = MinWidth.Value;
+					result.X = MinWidth.Value + marginX;
 				}
 
 				if (MaxWidth.HasValue && result.X > MaxWidth.Value)
 				{
-					result.X = MaxWidth.Value;
+					result.X = MaxWidth.Value + marginX;
 				}
 			}
 
 			if (Height.HasValue)
 			{
-				result.Y = Height.Value;
+				result.Y = Height.Value + marginY;
 			}
 			else
 			{
 				if (MinHeight.HasValue && result.Y < MinHeight.Value)
 				{
-					result.Y = MinHeight.Value;
+					result.Y = MinHeight.Value + marginY;
 				}
 
 				if (MaxHeight.HasValue && result.Y > MaxHeight.Value)
 				{
-					result.Y = MaxHeight.Value;
+					result.Y = MaxHeight.Value + marginY;
 				}
 			}
 
