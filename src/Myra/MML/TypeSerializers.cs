@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Myra.Graphics2D;
+using Myra.Graphics2D.UI;
 using Myra.Utility;
 using FontStashSharp.RichText;
 using System;
@@ -122,5 +123,12 @@ namespace Myra.MML
 		public override Rectangle DeserializeT(string str) => str.ParseRectangle();
 
 		public override string SerializeT(Rectangle obj) => obj.RectangleToString();
+	}
+
+	internal sealed class DimensionSerializer : TypeSerializer<Dimension>
+	{
+		public override Dimension DeserializeT(string str) => Dimension.Parse(str);
+
+		public override string SerializeT(Dimension obj) => obj.ToString();
 	}
 }

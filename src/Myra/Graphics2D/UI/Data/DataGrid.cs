@@ -1062,7 +1062,7 @@ namespace Myra.Graphics2D.UI.Data
 					_dataWidgets.Clear();
 				}
 
-				_grid.Width = null;
+				_grid.Width = Dimension.Auto;
 
 				if (size.X == 0 || size.Y == 0 || _data == null)
 				{
