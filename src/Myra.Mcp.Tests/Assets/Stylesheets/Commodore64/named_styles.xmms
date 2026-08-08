@@ -1,0 +1,9 @@
+<Stylesheet TextureRegionAtlas="ui_stylesheet.xmat">
+  <Fonts>
+    <Font Id="commodore-64" File="commodore-64.fnt" />
+  </Fonts>
+  <ButtonStyles>
+    <ButtonStyle Background="button" Padding="8, 5" />
+    <ButtonStyle Id="danger" PressedBackground="button-down" Background="button" Padding="8, 5" />
+  </ButtonStyles>
+</Stylesheet>

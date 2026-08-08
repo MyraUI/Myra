@@ -1,0 +1,7 @@
+<Project>
+  <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Panel Id="normal" HorizontalAlignment="Left" VerticalAlignment="Top" Left="100" Top="50" Width="200" Height="80" />
+    <Panel Id="clipped" HorizontalAlignment="Left" VerticalAlignment="Top" Left="1200" Top="10" Width="200" Height="80" />
+    <Panel Id="empty" HorizontalAlignment="Left" VerticalAlignment="Top" />
+  </Panel>
+</Project>
