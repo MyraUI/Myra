@@ -103,6 +103,8 @@ partial class MainForm
 
 	private Widget CreateImageEditor(Record record, object obj)
 	{
+		const int previewHeight = 16;
+
 		var panel = new HorizontalStackPanel
 		{
 			Spacing = 8
@@ -113,7 +115,7 @@ partial class MainForm
 		{
 			HorizontalAlignment = HorizontalAlignment.Stretch,
 			VerticalAlignment = VerticalAlignment.Center,
-			Height = 16
+			Height = previewHeight
 		};
 
 		StackPanel.SetProportionType(image, ProportionType.Fill);
@@ -131,7 +133,7 @@ partial class MainForm
 				image.HorizontalAlignment = HorizontalAlignment.Center;
 
 				var aspectRatio = (float)asImage.Size.X / asImage.Size.Y;
-				image.Width = (int)(aspectRatio * image.Height);
+				image.Width = (int)(aspectRatio * previewHeight);
 			}
 		}
 		else
