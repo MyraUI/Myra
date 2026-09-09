@@ -173,7 +173,7 @@ namespace Myra.Graphics2D.UI
 		public ImageResizeMode ResizeMode { get; set; }
 
 		/// <summary>
-		/// Gets or sets the texture filtering override for this image, or null to use the global default.
+		/// Gets or sets the texture filtering override for this image, or null to use the global default set by <see cref="MyraEnvironment.ImageTextureFiltering"/>.
 		/// </summary>
 		public TextureFiltering? TextureFiltering { get; set; }
 

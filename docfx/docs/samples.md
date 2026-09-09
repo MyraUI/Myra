@@ -65,6 +65,11 @@ Shows how to create a property editor UI for editing object properties, useful f
 
 A practical example of building a text editor application with file operations, including open, save, and edit functionality.
 
+### Scaling
+[View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Scaling)
+
+Demonstrates how to scale the Myra UI. A slider changes the scale of the widget tree via the `Scale` property, while a "Text Scaling" combo switches between different text rasterization modes (standard, high-resolution with supersampling, and SDF) to keep text crisp when rendering at higher scales. The sample also shows configuring image and text texture filtering to control visual quality.
+
 ### Viewports
 [View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Viewports)
 
