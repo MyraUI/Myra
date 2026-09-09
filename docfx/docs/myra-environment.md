@@ -16,6 +16,8 @@ All properties are static and can be accessed as `MyraEnvironment.<PropertyName>
 | `TooltipDelayInMs` | `int` | Gets or sets the delay in milliseconds before showing a tooltip. |
 | `TooltipOffset` | `Point` | Gets or sets the offset from the mouse cursor where tooltips are displayed. |
 | `TooltipCreator` | `Func<Widget, Widget>` | Gets or sets the function used to create tooltip widgets. |
+| `ImageTextureFiltering` | `TextureFiltering` | Gets or sets the default texture filtering mode for images. |
+| `TextTextureFiltering` | `TextureFiltering` | Gets or sets the default texture filtering mode for text. |
 | `SmoothText` | `bool` | Gets or sets a value indicating whether text rendering should be smoothed (especially when scaling) at the cost of performance. |
 | `EnableModalDarkening` | `bool` | Gets or sets a value indicating whether modal dialogs should darken the background. |
 | `DarkeningColor` | `Color` | Gets or sets the color used to darken the background when modal dialogs are displayed. |
@@ -49,6 +51,10 @@ All properties are static and can be accessed as `MyraEnvironment.<PropertyName>
 // Configure general behavior
 MyraEnvironment.SmoothText = true;
 MyraEnvironment.EnableModalDarkening = true;
+
+// Configure rendering filtering
+MyraEnvironment.ImageTextureFiltering = TextureFiltering.Nearest;
+MyraEnvironment.TextTextureFiltering = TextureFiltering.Linear;
 
 // Configure input behavior
 MyraEnvironment.DoubleClickIntervalInMs = 400;
