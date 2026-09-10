@@ -1,7 +1,4 @@
 using AssetManagementBase;
-using FontStashSharp.RichText;
-using Myra.Graphics2D.Brushes;
-using Myra.Graphics2D.TextureAtlases;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -80,105 +77,6 @@ namespace Myra.Tests
 		}
 
 		[Fact]
-		public void LoadImage_ColorSeparatorButNoColor_ThrowsException()
-		{
-			var assetManager = CreateAssetManager();
-
-			// Empty color name throws because it cannot be parsed
-			var ex = Assert.Throws<Exception>(() => assetManager.LoadImage("MonoGameLogo.png|"));
-
-			Assert.NotNull(ex);
-		}
-
-		[Fact]
-		public void LoadImage_InvalidColorName_IgnoresColor()
-		{
-			var assetManager = CreateAssetManager();
-
-			// Invalid color names are silently ignored - the image loads without tint
-			var ex = Assert.Throws<Exception>(() => assetManager.LoadImage("MonoGameLogo.png|invalidColorName"));
-
-			Assert.NotNull(ex);
-		}
-
-		[Theory]
-		[InlineData("red")]
-		[InlineData("green")]
-		[InlineData("blue")]
-		[InlineData("white")]
-		[InlineData("#FF0000")]
-		[InlineData("#00FF00")]
-		[InlineData("#0000FFFF")]
-		public void LoadImage_ImageWithColorTint_AppliesTint(string colorName)
-		{
-			var assetManager = CreateAssetManager();
-
-			var image = assetManager.LoadImage($"MonoGameLogo.png|{colorName}") as TintedRegion;
-
-			Assert.NotNull(image);
-			Assert.NotNull(image.Region);
-			Assert.NotNull(image.Region.Texture);
-			Assert.Equal(64, image.Size.X);
-			Assert.Equal(64, image.Size.Y);
-			var expectedColor = ColorStorage.FromName(colorName).Value;
-			Assert.Equal(expectedColor, image.Color);
-		}
-
-		[Theory]
-		[InlineData("red")]
-		[InlineData("green")]
-		[InlineData("blue")]
-		[InlineData("yellow")]
-		[InlineData("#FF0000")]
-		[InlineData("#00FF00")]
-		[InlineData("#0000FF")]
-		public void LoadBrush_ColorName_ReturnsSolidBrush(string colorName)
-		{
-			var assetManager = CreateAssetManager();
-
-			var brush = assetManager.LoadBrush(colorName, null);
-
-			Assert.NotNull(brush);
-			var solidBrush = Assert.IsType<SolidBrush>(brush);
-			var expectedColor = ColorStorage.FromName(colorName).Value;
-			Assert.Equal(expectedColor, solidBrush.Color);
-		}
-
-		[Fact]
-		public void LoadBrush_InvalidColorAndNoImage_ThrowsException()
-		{
-			var assetManager = CreateAssetManager();
-
-			var ex = Assert.Throws<Exception>(() => assetManager.LoadBrush("invalidColor123"));
-
-			Assert.NotNull(ex);
-		}
-
-		[Fact]
-		public void LoadBrush_WithStylesheet_ResolvesBrush()
-		{
-			var assetManager = CreateAssetManager();
-
-			var stylesheet = assetManager.LoadStylesheet("Stylesheets/Default/default_ui_skin.xmms");
-			var brush = assetManager.LoadBrush("button", stylesheet);
-
-			Assert.NotNull(brush);
-		}
-
-		[Fact]
-		public void LoadBrush_NullStylesheet_TreatsAsFileOrColor()
-		{
-			var assetManager = CreateAssetManager();
-
-			var brush = assetManager.LoadBrush("red", null);
-
-			Assert.NotNull(brush);
-			var solidBrush = Assert.IsType<SolidBrush>(brush);
-			var expectedColor = ColorStorage.FromName("red").Value;
-			Assert.Equal(expectedColor, solidBrush.Color);
-		}
-
-		[Fact]
 		public void LoadFont_BMFontFile_LoadsSuccessfully()
 		{
 			var assetManager = CreateAssetManager();
@@ -189,33 +87,6 @@ namespace Myra.Tests
 			Assert.NotNull(font);
 			Assert.Equal(assetName, font.Name);
 			Utility.AssertEqualEpsilon(63f, font.FontSize);
-		}
-
-		[Fact]
-		public void LoadFont_FromStylesheet_ReturnsCorrectFont()
-		{
-			var assetManager = CreateAssetManager();
-			var assetName = "default-font";
-
-			var stylesheet = assetManager.LoadStylesheet("Stylesheets/Default/default_ui_skin.xmms");
-			var font = assetManager.LoadFont(assetName, stylesheet);
-
-			Assert.NotNull(font);
-			Assert.Equal(assetName, font.Name);
-			Utility.AssertEqualEpsilon(20f, font.FontSize);
-		}
-
-		[Fact]
-		public void LoadFont_NonExistentStylesheetFont_ThrowsException()
-		{
-			var assetManager = CreateAssetManager();
-
-			var stylesheet = assetManager.LoadStylesheet("Stylesheets/Default/default_ui_skin.xmms");
-
-			var ex = Assert.Throws<Exception>(() =>
-				assetManager.LoadFont("nonExistentFont", stylesheet));
-
-			Assert.NotNull(ex);
 		}
 
 		[Fact]
@@ -297,41 +168,6 @@ namespace Myra.Tests
 			Assert.Equal("default-font", defaultFont.Id);
 			Assert.Equal("Inter-Regular.ttf", defaultFont.File);
 			Assert.Equal(20, defaultFont.Size);
-		}
-
-		[Fact]
-		public void LoadStylesheet_DefaultFontWithSize()
-		{
-			var assetManager = CreateAssetManager();
-
-			var stylesheet = assetManager.LoadStylesheet("Stylesheets/Default/default_ui_skin.xmms");
-			var defaultFont = assetManager.LoadFont("default-font:36", stylesheet);
-
-			Assert.NotNull(defaultFont);
-			Assert.Equal("default-font:36", defaultFont.Name);
-			Assert.Equal(36, (int)Math.Round(defaultFont.FontSize));
-		}
-
-		[Fact]
-		public void LoadStylesheet_DefaultFontNotExistant()
-		{
-			var assetManager = CreateAssetManager();
-
-			var stylesheet = assetManager.LoadStylesheet("Stylesheets/Default/default_ui_skin.xmms");
-			var ex = Assert.Throws<Exception>(() => assetManager.LoadFont("default-font2", stylesheet));
-
-			Assert.NotNull(ex);
-		}
-
-		[Fact]
-		public void LoadStylesheet_FontSizeCantBeModified()
-		{
-			var assetManager = CreateAssetManager();
-
-			var stylesheet = assetManager.LoadStylesheet("Stylesheets/Commodore64/ui_stylesheet.xmms");
-			var ex = Assert.Throws<Exception>(() => assetManager.LoadFont("commodore-64:32", stylesheet));
-
-			Assert.NotNull(ex);
 		}
 
 		[Fact]

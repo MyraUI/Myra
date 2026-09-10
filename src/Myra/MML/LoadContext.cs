@@ -10,7 +10,6 @@ using System.Xml.Linq;
 using Myra.Attributes;
 using FontStashSharp;
 using Myra.Utility;
-using FontStashSharp.RichText;
 using AssetManagementBase;
 using Myra.Graphics2D.TextureAtlases;
 using Myra.Graphics2D.UI.Styles;
@@ -178,13 +177,13 @@ namespace Myra.MML
 
 				if (typeof(IBrush).IsAssignableFrom(propertyType))
 				{
-					value = AssetManager.LoadBrush(attr.Value, Stylesheet);
+					value = MyraAssets.LoadBrush(attr.Value, Stylesheet, AssetManager);
 					break;
 				}
 
 				if (typeof(SpriteFontBase).IsAssignableFrom(propertyType))
 				{
-					value = AssetManager.LoadFont(attr.Value, Stylesheet);
+					value = MyraAssets.LoadFont(attr.Value, Stylesheet, AssetManager);
 					break;
 				}
 

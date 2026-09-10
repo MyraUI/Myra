@@ -107,7 +107,6 @@ namespace Myra
 #endif
 
 		private static MouseCursorType _mouseCursorType;
-		private static AssetManager _defaultAssetManager;
 
 		/// <summary>
 		/// Gets the version number of Myra.
@@ -281,28 +280,8 @@ namespace Myra
 		/// <summary>
 		/// Gets or sets the asset manager used to load default assets.
 		/// </summary>
-		public static AssetManager DefaultAssetManager
-		{
-			get
-			{
-				if (_defaultAssetManager == null)
-				{
-					_defaultAssetManager = AssetManager.CreateFileAssetManager(AppContext.BaseDirectory);
-				}
-
-				return _defaultAssetManager;
-			}
-
-			set
-			{
-				if (value == null)
-				{
-					throw new ArgumentNullException(nameof(value));
-
-				}
-				_defaultAssetManager = value;
-			}
-		}
+		[Obsolete("Use MyraAssets.DefaultAssetManager")]
+		public static AssetManager DefaultAssetManager => MyraAssets.DefaultAssetManager;
 
 		/// <summary>
 		/// Gets or sets the delay in milliseconds before showing a tooltip.

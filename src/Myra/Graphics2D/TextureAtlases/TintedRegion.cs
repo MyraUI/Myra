@@ -1,6 +1,8 @@
 ﻿using Myra.Utility;
 using System;
 using Myra.MML;
+using FontStashSharp.RichText;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -102,6 +104,28 @@ namespace Myra.Graphics2D.TextureAtlases
 			}
 
 			return Region.ToString() + Separator + Color.ToColorString();
+		}
+
+		internal static bool TryParse(ref string assetName, out Color? tint)
+		{
+			tint = null;
+
+			var parts = assetName.Split(Separator);
+			if (parts.Length < 2)
+			{
+				return false;
+			}
+
+			var color = ColorStorage.FromName(parts[1]);
+			if (color == null)
+			{
+				throw new Exception($"Could not parse color name '{parts[1]}'");
+			}
+
+			assetName = parts[0];
+			tint = color.Value;
+
+			return true;
 		}
 	}
 }

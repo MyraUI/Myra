@@ -24,7 +24,7 @@ namespace Myra.Graphics2D.TextureAtlases
 		/// <summary>
 		/// The character used to separate atlas names from region names in atlas references.
 		/// </summary>
-		private const char Separator = ':';
+		internal const char Separator = ':';
 
 		private const string TextureAtlasName = "TextureAtlas";
 		private const string ImageName = "Image";
