@@ -1,9 +1,10 @@
 <Project>
   <Project.ExportOptions Namespace="MyraPad.UI" Class="ImageEditorDialog" OutputPath="D:\Projects\Myra\src\MyraPad\UI" FieldsVisibility="Private" />
-  <Dialog Title="Image Editor" Left="552" Top="333">
+  <Dialog Title="Image Editor" Left="552" Top="308">
     <VerticalStackPanel Spacing="8">
       <TextBox Readonly="True" Width="400" Id="_textValue" />
       <HorizontalStackPanel Spacing="8" HorizontalAlignment="Left">
+        <Label Text="Color:" VerticalAlignment="Center" />
         <Panel Width="32" Height="32" Margin="4" Background="#FFCC01FF" Id="_panelColor" />
         <Button VerticalAlignment="Center" Id="_buttonChangeColor">
           <Label Text="Change..." />
