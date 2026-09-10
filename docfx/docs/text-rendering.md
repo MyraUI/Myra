@@ -15,7 +15,11 @@ _label1.Font = fontSystem.GetFont(32);
 
 By default every dynamic glyph is rasterized once into the texture atlas as a normal alpha bitmap. When such a bitmap is drawn at a size other than the one it was rasterized for, the edges quickly become blurry or pixelated.
 
-Because Myra delegates all text rendering to FontStashSharp, you can use its two quality-preserving techniques: **supersampling** and **signed distance fields (SDF)**. Both are configured through `FontSystemSettings`/`FontSystemDefaults`, and Myra handles the actual drawing for you.
+Myra provides several quality-related options for text rendering:
+
+* **Supersampling** - keeps the edges smooth when text is scaled or rotated. Comes from FontStashSharp and is configured through `FontSystemSettings`/`FontSystemDefaults`.
+* **SDF (Signed Distance Field)** - keeps the edges crisp at *any* scale. Comes from FontStashSharp and is configured through `FontSystemSettings`/`FontSystemDefaults`.
+* **Texture filtering** - controls how the glyph atlas is sampled. Configured through `MyraEnvironment.TextTextureFiltering`.
 
 ### Supersampling
 
@@ -90,3 +94,21 @@ FontSystemDefaults.FixedSDFFontSize = 64;
 When `FixedSDFFontSize` is left unset (`null`, the default), the font is rasterized directly at the requested size.
 
 See FontStashSharp's [signed distance field rendering](https://fontstashsharp.github.io/FontStashSharp/docs/signed-distance-field-rendering.html) documentation for more details. It also contains a sample showing ordinary rendering, supersampling and SDF side by side.
+
+### Texture Filtering
+
+`MyraEnvironment.TextTextureFiltering` controls the GPU texture filtering used when sampling the glyph atlas. This affects how the pre-rasterized glyph bitmaps are interpolated on screen and is most visible when text is scaled or rotated.
+
+The default value is `TextureFiltering.Nearest`. Available options:
+
+* `Nearest` - crisp, sharp edges. Good for small unpixel-perfect sizes or a pixelated look.
+* `Linear` - bilinear interpolation; softer, smoother edges.
+* `Anisotropic` - highest quality filtering.
+
+```c#
+MyraEnvironment.TextTextureFiltering = TextureFiltering.Linear;
+```
+
+This setting only applies to text rendered in the standard rasterization mode. Text rendered with SDF is drawn through FontStashSharp's internal `SDFTextBatch` shader, which handles its own edge rendering. `MyraEnvironment.SmoothText` is the obsolete predecessor of this property.
+
+See [MyraEnvironment](myra-environment.md) for more settings.
