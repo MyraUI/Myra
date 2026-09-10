@@ -10,8 +10,8 @@
   href: MyraViewer.md
 - name: Images
   href: images.md
-- name: Fonts
-  href: fonts.md
+- name: Text Rendering
+  href: text-rendering.md
 - name: Rich Text
   href: rich-text.md
 - name: Basic Layout and Panel
