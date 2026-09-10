@@ -112,3 +112,11 @@ MyraEnvironment.TextTextureFiltering = TextureFiltering.Linear;
 This setting only applies to text rendered in the standard rasterization mode. Text rendered with SDF is drawn through FontStashSharp's internal `SDFTextBatch` shader, which handles its own edge rendering. `MyraEnvironment.SmoothText` is the obsolete predecessor of this property.
 
 See [MyraEnvironment](myra-environment.md) for more settings.
+
+## Scaling Sample
+
+The [Scaling sample](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Scaling) demonstrates everything covered above next to each other. A slider scales the whole UI by changing the widget tree's `Scale` property (0.2 to 4.0), so the effect of each quality option on scaled text becomes visible immediately.
+
+* The **Text Scaling** combo switches between the rasterization approaches: *None* (standard rasterization), *Supersampling*, and *SDF*, using `FontSystemDefaults`.
+* The **property grid** below it lets you tweak the parameters of the selected approach live: `FontResolutionFactor`, `KernelWidth` and `KernelHeight` for supersampling, `FixedFontSize` for SDF.
+* The **Texture Filtering** combo sets `MyraEnvironment.TextTextureFiltering` (`Nearest`, `Linear`, `Anisotropic`).

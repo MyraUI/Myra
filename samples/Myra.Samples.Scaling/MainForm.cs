@@ -7,7 +7,7 @@ namespace Myra.Samples;
 public partial class MainForm
 {
 	private AllWidgets _allWidgets;
-	
+
 	private SupersamplingSettings SupersamplingSettings { get; } = new SupersamplingSettings();
 	private SDFSettings SDFSettings { get; } = new SDFSettings();
 
@@ -15,13 +15,16 @@ public partial class MainForm
 	{
 		BuildUI();
 
-		_sliderScale.ValueChangedByUser += (s, a) => Update();
+		_sliderScale.ValueChangedByUser += (s, a) => UpdateScale();
 		_comboTextScaling.SelectedIndexChanged += (s, a) => RecreateAllWidgets();
 
 		_comboTextScaling.SelectedIndex = 0;
-		Update();
 
 		_propertyGridParameters.PropertyChanged += (s, a) => RecreateAllWidgets();
+		_comboTextureFiltering.SelectedIndexChanged += (s, a) => MyraEnvironment.TextTextureFiltering = (TextureFiltering)_comboTextureFiltering.SelectedIndex;
+
+		UpdateScale();
+		_comboTextureFiltering.SelectedIndex = 0;
 	}
 
 	private void ResetFontSettings()
@@ -68,11 +71,10 @@ public partial class MainForm
 		_panelContainer.Content = _allWidgets;
 
 		// Reset font settings so property grid fields would be created correctly
+		ResetFontSettings();
 		DefaultAssets.Reset();
 		Stylesheet.Current = DefaultAssets.DefaultStylesheet;
-		ResetFontSettings();
-
-		switch(_comboTextScaling.SelectedIndex)
+		switch (_comboTextScaling.SelectedIndex)
 		{
 			case 0:
 				_propertyGridParameters.Object = null;
@@ -87,10 +89,10 @@ public partial class MainForm
 				break;
 		}
 
-		Update();
+		UpdateScale();
 	}
 
-	private void Update()
+	private void UpdateScale()
 	{
 		_labelScale.Text = _sliderScale.Value.ToString("0.00");
 		_allWidgets.Scale = new Vector2((float)_sliderScale.Value);

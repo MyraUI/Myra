@@ -10,7 +10,7 @@
           <Proportion Type="Auto" />
           <Proportion Type="Fill" />
         </Grid.ColumnsProportions>
-        <Label Text="Text Scaling:" />
+        <Label Text="Text Scaling" />
         <ComboView Id="_comboTextScaling" Grid.Column="1">
           <Label Text="None" />
           <Label Text="Supersampling" />
@@ -21,6 +21,12 @@
           <HorizontalSlider Minimum="0.2" Maximum="4" Value="1" Width="500" Id="_sliderScale" />
           <Label Text="3" Id="_labelScale" />
         </HorizontalStackPanel>
+        <Label Text="Texture Filtering" Grid.Row="2" />
+        <ComboView Id="_comboTextureFiltering" Grid.Column="1" Grid.Row="2">
+          <Label Text="Nearest" />
+          <Label Text="Linear" />
+          <Label Text="Anisotropic" />
+        </ComboView>
       </Grid>
       <PropertyGrid Id="_propertyGridParameters" />
     </HorizontalStackPanel>
