@@ -175,6 +175,7 @@ namespace Myra.Graphics2D.UI
 		/// <summary>
 		/// Gets or sets the texture filtering override for this image, or null to use the global default set by <see cref="MyraEnvironment.ImageTextureFiltering"/>.
 		/// </summary>
+		[DefaultValue(null)]
 		public TextureFiltering? TextureFiltering { get; set; }
 
 		/// <summary>

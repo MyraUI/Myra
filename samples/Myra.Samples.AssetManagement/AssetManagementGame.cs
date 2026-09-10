@@ -29,7 +29,7 @@ namespace Myra.Samples.AssetManagement
 
 			MyraEnvironment.Game = this;
 
-			MyraEnvironment.DefaultAssetManager = AssetManager.CreateFileAssetManager(Path.Combine(AppContext.BaseDirectory, "Assets"));
+			MyraAssets.DefaultAssetManager = AssetManager.CreateFileAssetManager(Path.Combine(AppContext.BaseDirectory, "Assets"));
 
 			_mainForm = new MainForm();
 			_mainForm._mainMenu.HoverIndex = 0;

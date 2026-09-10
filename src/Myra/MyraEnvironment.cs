@@ -281,7 +281,11 @@ namespace Myra
 		/// Gets or sets the asset manager used to load default assets.
 		/// </summary>
 		[Obsolete("Use MyraAssets.DefaultAssetManager")]
-		public static AssetManager DefaultAssetManager => MyraAssets.DefaultAssetManager;
+		public static AssetManager DefaultAssetManager
+		{
+			get => MyraAssets.DefaultAssetManager;
+			set => MyraAssets.DefaultAssetManager = value;
+		}
 
 		/// <summary>
 		/// Gets or sets the delay in milliseconds before showing a tooltip.

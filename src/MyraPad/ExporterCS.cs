@@ -420,7 +420,7 @@ namespace MyraPad
 							var typeName = property.PropertyType.Name;
 							if (typeof(IImage).IsAssignableFrom(property.PropertyType))
 							{
-								typeName = "TextureRegion";
+								typeName = "Image";
 							}
 							else if (typeof(SpriteFontBase).IsAssignableFrom(property.PropertyType))
 							{
@@ -432,7 +432,7 @@ namespace MyraPad
 								typeName = "Brush";
 							}
 
-							strValue = "MyraEnvironment.DefaultAssetManager.Load" + typeName + "(\"" + s + "\")";
+							strValue = "MyraAssets.Load" + typeName + "(\"" + s + "\")";
 						}
 					}
 					else

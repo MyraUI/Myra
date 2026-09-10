@@ -67,7 +67,16 @@ namespace AssetManagementBase
 		/// <returns>The loaded texture region atlas.</returns>
 		public static TextureRegionAtlas LoadTextureRegionAtlas(this AssetManager assetManager, string assetName) => assetManager.UseLoader(_atlasLoader, assetName);
 
-		internal static TextureRegion LoadTextureRegion(this AssetManager assetManager, string assetName)
+		/// <summary>
+		/// Loads a texture region from an asset, either from a texture region atlas or as a standalone texture.
+		/// </summary>
+		/// <remarks>
+		/// Examples: "atlas.xmat:commodore-64" (a region of a named atlas) or "image.png" (a standalone texture).
+		/// </remarks>
+		/// <param name="assetManager">The asset manager instance.</param>
+		/// <param name="assetName">The name of the asset to load.</param>
+		/// <returns>The loaded texture region.</returns>
+		public static TextureRegion LoadTextureRegion(this AssetManager assetManager, string assetName)
 		{
 			string regionName;
 			if (TextureRegionAtlas.TryGetRegionName(ref assetName, out regionName))
@@ -136,6 +145,15 @@ namespace AssetManagementBase
 
 		}
 
+		/// <summary>
+		/// Loads a sprite font by name, optionally parsing a size parameter from the asset name.
+		/// </summary>
+		/// <remarks>
+		/// Examples: "fonts/arial64.fnt" (a static font) or "fonts/comic.ttf:48" (a dynamic font). The size after ':' is only valid for dynamic fonts, not static .fnt fonts.
+		/// </remarks>
+		/// <param name="assetManager">The asset manager instance.</param>
+		/// <param name="assetName">The name of the font asset, optionally with a size parameter.</param>
+		/// <returns>The loaded sprite font.</returns>
 		public static SpriteFontBase LoadFont(this AssetManager assetManager, string assetName)
 		{
 			int? fontSize = null;

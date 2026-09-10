@@ -133,7 +133,7 @@ namespace MyraPad.UI
 				else
 				{
 					PropertyGridSettings.BasePath = string.Empty;
-					PropertyGridSettings.AssetManager = MyraEnvironment.DefaultAssetManager;
+					PropertyGridSettings.AssetManager = MyraAssets.DefaultAssetManager;
 					PropertyGridSettings.AssetManager.Cache.Clear();
 				}
 
@@ -292,7 +292,7 @@ namespace MyraPad.UI
 			PropertyGrid.CustomValuesProvider = RecordValuesProvider;
 			PropertyGrid.CustomSetter = RecordSetter;
 			PropertyGrid.CustomWidgetProvider = CreateCustomEditor;
-			PropertyGrid.Settings.AssetManager = MyraEnvironment.DefaultAssetManager;
+			PropertyGrid.Settings.AssetManager = MyraAssets.DefaultAssetManager;
 
 			_topSplitPane.SetSplitterPosition(0, state != null ? state.TopSplitterPosition1 : 0.2f);
 			_topSplitPane.SetSplitterPosition(1, state != null ? state.TopSplitterPosition2 : 0.6f);

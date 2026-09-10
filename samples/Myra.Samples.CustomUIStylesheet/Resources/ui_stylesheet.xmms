@@ -10,11 +10,11 @@
     <TextBoxStyle TextColor="Black" Font="commodore-64" Cursor="cursor-black" Selection="light-blue" Background="white" />
   </TextBoxStyles>
   <ButtonStyles>
-    <ButtonStyle PressedBackground="button-down" Background="button" Padding="8, 5" />
+    <ButtonStyle Background="button" PressedBackground="button-down" Padding="8, 5" />
   </ButtonStyles>
   <CheckBoxStyles>
     <CheckButtonStyle>
-      <ImageStyle PressedImage="check-box" Image="check-box-off" />
+      <ImageStyle Image="check-box-off" PressedImage="check-box" />
     </CheckButtonStyle>
   </CheckBoxStyles>
   <HorizontalSliderStyles>
@@ -40,7 +40,7 @@
   <ComboBoxStyles>
     <ComboBoxStyle Background="list">
       <ListBoxStyle Background="blue">
-        <ListItemStyle PressedBackground="button-down" OverBackground="white" Padding="8, 5" />
+        <ListItemStyle OverBackground="white" PressedBackground="button-down" Padding="8, 5" />
       </ListBoxStyle>
     </ComboBoxStyle>
   </ComboBoxStyles>
@@ -52,7 +52,7 @@
   <TreeStyles>
     <TreeStyle SelectionBackground="progress-bar">
       <MarkStyle>
-        <ImageStyle PressedImage="minus" Image="plus" />
+        <ImageStyle Image="plus" PressedImage="minus" />
       </MarkStyle>
       <LabelStyle TextColor="White" Font="commodore-64" />
     </TreeStyle>

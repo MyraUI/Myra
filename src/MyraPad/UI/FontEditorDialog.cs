@@ -1,5 +1,6 @@
 using AssetManagementBase;
 using FontStashSharp;
+using Myra;
 using Myra.Graphics2D.UI.File;
 using Myra.Graphics2D.UI.Styles;
 using Myra.Utility;
@@ -35,7 +36,7 @@ namespace MyraPad.UI
 				StylesheetFont.TryGetParameter(ref assetName, out parameter);
 
 				var project = Studio.MainForm.Project;
-				return Studio.AssetManager.LoadFont($"{assetName}{StylesheetFont.Separator}{FontSize}", project.Stylesheet);
+				return MyraAssets.LoadFont($"{assetName}{StylesheetFont.Separator}{FontSize}", project.Stylesheet, Studio.AssetManager);
 			}
 
 			set
