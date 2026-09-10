@@ -27,9 +27,6 @@ public class ScalingGame : Game
 		base.LoadContent();
 
 		MyraEnvironment.Game = this;
-		MyraEnvironment.EnableModalDarkening = true;
-		MyraEnvironment.ImageTextureFiltering = TextureFiltering.Nearest;
-		MyraEnvironment.TextTextureFiltering = TextureFiltering.Linear;
 
 		//			Stylesheet.Current = DefaultAssets.DefaultStylesheet2X;
 
@@ -62,12 +59,16 @@ public class ScalingGame : Game
 		GraphicsDevice.Clear(Color.Black);
 		_desktop.Render();
 
-		_spriteBatch.Begin();
+		var fontSystem = DefaultAssets.DefaultStylesheet.Fonts.First().Font.FontSystem;
+		if (fontSystem.Atlases.Count > 0)
+		{
+			_spriteBatch.Begin();
 
-		var atlas = DefaultAssets.DefaultStylesheet.Fonts.First().Font.FontSystem.Atlases[0].Texture;
+			var atlas = fontSystem.Atlases[0].Texture;
 
-		// _spriteBatch.Draw(atlas, Vector2.Zero, Color.White);
+			// _spriteBatch.Draw(atlas, Vector2.Zero, Color.White);
 
-		_spriteBatch.End();
+			_spriteBatch.End();
+		}
 	}
 }

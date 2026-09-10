@@ -4,8 +4,6 @@
     <TargetFramework>$(AppTargetFramework)</TargetFramework>
     <OutputPath>bin\MonoGame\$(Configuration)</OutputPath>
     <DefineConstants>$(DefineConstants);MONOGAME</DefineConstants>
-    <AssemblyName>Myra.Samples.AllWidgets</AssemblyName>
-    <RootNamespace>Myra.Samples.AllWidgets</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>
