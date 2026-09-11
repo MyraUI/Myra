@@ -113,7 +113,7 @@ namespace Myra
 			Color? color = null;
 			TintedRegion.TryParse(ref assetName, out color);
 
-			var region = LoadTextureRegion(NormalizePath(assetName), customStylesheet, customAssetManager);
+			var region = LoadTextureRegion(assetName, customStylesheet, customAssetManager);
 			if (color == null)
 			{
 				return region;
@@ -152,7 +152,7 @@ namespace Myra
 				}
 			}
 
-			return LoadImage(NormalizePath(assetName), customStylesheet, customAssetManager);
+			return LoadImage(assetName, customStylesheet, customAssetManager);
 		}
 
 		/// <summary>
