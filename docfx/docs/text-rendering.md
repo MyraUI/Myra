@@ -115,7 +115,11 @@ See [MyraEnvironment](myra-environment.md) for more settings.
 
 ## Scaling Sample
 
-The [Scaling sample](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Scaling) demonstrates everything covered above next to each other. A slider scales the whole UI by changing the widget tree's `Scale` property (0.2 to 4.0), so the effect of each quality option on scaled text becomes visible immediately.
+The [Scaling sample](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Scaling) demonstrates everything covered above next to each other.
+
+![Scaling Sample](~/images/samples/Scaling.png)
+
+A slider scales the whole UI by changing the widget tree's `Scale` property (0.2 to 4.0), so the effect of each quality option on scaled text becomes visible immediately.
 
 * The **Text Scaling** combo switches between the rasterization approaches: *None* (standard rasterization), *Supersampling*, and *SDF*, using `FontSystemDefaults`.
 * The **property grid** below it lets you tweak the parameters of the selected approach live: `FontResolutionFactor`, `KernelWidth` and `KernelHeight` for supersampling, `FixedFontSize` for SDF.
