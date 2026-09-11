@@ -28,7 +28,7 @@ namespace Myra.Graphics2D
 		/// <summary>
 		/// Low-level rendering
 		/// </summary>
-		internal class Renderer: IDisposable
+		private class Renderer: IDisposable
 		{
 #if MONOGAME
 			private static SamplerState _textureFilteringAnisotropic = new SamplerState
@@ -431,10 +431,12 @@ namespace Myra.Graphics2D
 					case ModeType.Sprite:
 						_renderer.End();
 						break;
-#if MONOGAME || FNA
 					case ModeType.SDF:
+#if MONOGAME || FNA
 						SDFTextBatch.End();
 						break;
+#else
+						throw new NotSupportedException("SDF rendering is not supported by Myra.Stride/Myra.PlatformaAgnostic.");
 #endif
 				}
 
@@ -449,10 +451,12 @@ namespace Myra.Graphics2D
 					case ModeType.Sprite:
 						BeginSprite();
 						break;
-#if MONOGAME || FNA
 					case ModeType.SDF:
+#if MONOGAME || FNA
 						SDFTextBatch.Begin();
 						break;
+#else
+						throw new NotSupportedException("SDF rendering is not supported by Myra.Stride/Myra.PlatformaAgnostic.");
 #endif
 				}
 			}
