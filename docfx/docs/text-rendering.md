@@ -119,4 +119,6 @@ The [Scaling sample](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Sam
 
 * The **Text Scaling** combo switches between the rasterization approaches: *None* (standard rasterization), *Supersampling*, and *SDF*, using `FontSystemDefaults`.
 * The **property grid** below it lets you tweak the parameters of the selected approach live: `FontResolutionFactor`, `KernelWidth` and `KernelHeight` for supersampling, `FixedFontSize` for SDF.
-* The **Texture Filtering** combo sets `MyraEnvironment.TextTextureFiltering` (`Nearest`, `Linear`, `Anisotropic`).
+* The **Text Texture Filtering** combo sets `MyraEnvironment.TextTextureFiltering` (`Nearest`, `Linear`, `Anisotropic`).
+* The **Image Texture Filtering** combo sets `MyraEnvironment.ImageTextureFiltering` (`Nearest`, `Linear`, `Anisotropic`) for the widget images.
+* The **Stylesheet** combo switches the used stylesheet between `Default` and `Default2X`, so you can compare how the higher-resolution assets hold up when the UI is scaled up or down.
