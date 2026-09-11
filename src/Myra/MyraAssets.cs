@@ -90,7 +90,12 @@ namespace Myra
 			}
 
 			var assetManager = customAssetManager ?? DefaultAssetManager;
-			return assetManager.LoadTextureRegion(NormalizePath(assetName));
+			var result = assetManager.LoadTextureRegion(NormalizePath(assetName));
+			
+			// Set name again to get rid of AMB rooted path symbol
+			result.Name = assetName;
+
+			return result;
 		}
 
 		/// <summary>
