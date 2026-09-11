@@ -10,22 +10,33 @@
           <Proportion Type="Auto" />
           <Proportion Type="Fill" />
         </Grid.ColumnsProportions>
-        <Label Text="Text Scaling" />
-        <ComboView Id="_comboTextScaling" Grid.Column="1">
+        <Label Text="Scale" VerticalAlignment="Center" />
+        <HorizontalStackPanel Spacing="8" Grid.Column="1">
+          <HorizontalSlider Minimum="0.2" Maximum="4" Value="1" Width="500" Id="_sliderScale" />
+          <Label Text="3" Id="_labelScale" />
+        </HorizontalStackPanel>
+        <Label Text="Text Scaling" Grid.Row="1" />
+        <ComboView Id="_comboTextScaling" Grid.Column="1" Grid.Row="1">
           <Label Text="None" />
           <Label Text="Supersampling" />
           <Label Text="SDF" />
         </ComboView>
-        <Label Text="Scale" VerticalAlignment="Center" Grid.Row="1" />
-        <HorizontalStackPanel Spacing="8" Grid.Column="1" Grid.Row="1">
-          <HorizontalSlider Minimum="0.2" Maximum="4" Value="1" Width="500" Id="_sliderScale" />
-          <Label Text="3" Id="_labelScale" />
-        </HorizontalStackPanel>
-        <Label Text="Texture Filtering" Grid.Row="2" />
-        <ComboView Id="_comboTextureFiltering" Grid.Column="1" Grid.Row="2">
+        <Label Text="Text Texture Filtering" Grid.Row="2" />
+        <ComboView Id="_comboTextTextureFiltering" Grid.Column="1" Grid.Row="2">
           <Label Text="Nearest" />
           <Label Text="Linear" />
           <Label Text="Anisotropic" />
+        </ComboView>
+        <Label Text="Image Texture Filtering" Grid.Row="3" />
+        <ComboView Id="_comboImageTextureFiltering" Grid.Column="1" Grid.Row="3">
+          <Label Text="Nearest" />
+          <Label Text="Linear" />
+          <Label Text="Anisotropic" />
+        </ComboView>
+        <Label Text="Stylesheet" Grid.Row="4" />
+        <ComboView Id="_comboStylesheet" Grid.Column="1" Grid.Row="4">
+          <Label Text="Default" />
+          <Label Text="Default2X" />
         </ComboView>
       </Grid>
       <PropertyGrid Id="_propertyGridParameters" />

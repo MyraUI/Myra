@@ -11,6 +11,19 @@ public partial class MainForm
 	private SupersamplingSettings SupersamplingSettings { get; } = new SupersamplingSettings();
 	private SDFSettings SDFSettings { get; } = new SDFSettings();
 
+	private Stylesheet DefaultStylesheet
+	{
+		get
+		{
+			if (_comboStylesheet.SelectedIndex != 1)
+			{
+				return DefaultAssets.DefaultStylesheet;
+			}
+
+			return DefaultAssets.DefaultStylesheet2X;
+		}
+	}
+
 	public MainForm()
 	{
 		BuildUI();
@@ -21,10 +34,15 @@ public partial class MainForm
 		_comboTextScaling.SelectedIndex = 0;
 
 		_propertyGridParameters.PropertyChanged += (s, a) => RecreateAllWidgets();
-		_comboTextureFiltering.SelectedIndexChanged += (s, a) => MyraEnvironment.TextTextureFiltering = (TextureFiltering)_comboTextureFiltering.SelectedIndex;
+		_comboTextTextureFiltering.SelectedIndexChanged += (s, a) => MyraEnvironment.TextTextureFiltering = (TextureFiltering)_comboTextTextureFiltering.SelectedIndex;
+		_comboImageTextureFiltering.SelectedIndexChanged += (s, a) => MyraEnvironment.ImageTextureFiltering = (TextureFiltering)_comboImageTextureFiltering.SelectedIndex;
 
 		UpdateScale();
-		_comboTextureFiltering.SelectedIndex = 0;
+		_comboTextTextureFiltering.SelectedIndex = 0;
+		_comboImageTextureFiltering.SelectedIndex = 0;
+
+		_comboStylesheet.SelectedIndex = 0;
+		_comboStylesheet.SelectedIndexChanged += (s, a) => RecreateAllWidgets();
 	}
 
 	private void ResetFontSettings()
@@ -61,7 +79,7 @@ public partial class MainForm
 		}
 
 		DefaultAssets.Reset();
-		Stylesheet.Current = DefaultAssets.DefaultStylesheet;
+		Stylesheet.Current = DefaultStylesheet;
 
 		_allWidgets = new AllWidgets
 		{

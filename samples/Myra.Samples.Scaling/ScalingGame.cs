@@ -28,8 +28,6 @@ public class ScalingGame : Game
 
 		MyraEnvironment.Game = this;
 
-		//			Stylesheet.Current = DefaultAssets.DefaultStylesheet2X;
-
 		var mainForm = new MainForm();
 
 		_desktop = new Desktop
