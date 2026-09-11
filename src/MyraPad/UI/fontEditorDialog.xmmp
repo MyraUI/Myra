@@ -1,14 +1,17 @@
 <Project>
   <Project.ExportOptions Namespace="MyraPad.UI" Class="FontEditorDialog" OutputPath="D:\Projects\Myra\src\MyraPad\UI" FieldsVisibility="Private" />
-  <Dialog Title="Font Editor" Left="552" Top="337">
+  <Dialog Title="Font Editor" Left="552" Top="312">
     <VerticalStackPanel Spacing="8">
       <TextBox Readonly="True" Width="400" Id="_textValue" />
-      <SpinButton Maximum="100" Minimum="4" Value="32" Integer="True" Width="50" Id="_spinSize" />
+      <HorizontalStackPanel Spacing="8">
+        <Label Text="Size" VerticalAlignment="Center" />
+        <SpinButton Maximum="100" Minimum="4" Value="32" Integer="True" Width="50" Id="_spinSize" />
+      </HorizontalStackPanel>
       <Button Id="_buttomSetFromStylesheet">
-        <Label Text="Set Image From Stylesheet" />
+        <Label Text="Set Font From Stylesheet" />
       </Button>
       <Button Id="_buttonSetFromFile">
-        <Label Text="Set Image From External File" />
+        <Label Text="Set Font From External File" />
       </Button>
     </VerticalStackPanel>
   </Dialog>

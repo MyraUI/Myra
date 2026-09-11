@@ -7,7 +7,9 @@ using Myra.Graphics2D.TextureAtlases;
 using Myra.Graphics2D.UI.ColorPicker;
 using Myra.Graphics2D.UI.File;
 using Myra.MML;
+using Myra.Utility;
 using System;
+using System.IO;
 
 namespace MyraPad.UI
 {
@@ -139,9 +141,15 @@ namespace MyraPad.UI
 				// We need to prepend AMB path rooted symbol since we're using absolute path
 				// Otherwise this code will crash on Linux
 				var image = Studio.AssetManager.LoadTexture2D(MyraEnvironment.GraphicsDevice, "@" + dlg.FilePath);
+
+				var path = dlg.FilePath;
+				if (!string.IsNullOrEmpty(Studio.MainForm.FilePath))
+				{
+					path = PathUtils.TryToMakePathRelativeTo(path, Path.GetDirectoryName(Studio.MainForm.FilePath));
+				}
 				Image = new TextureRegion(image)
 				{
-					Name = dlg.FilePath
+					Name = path
 				};
 			};
 
