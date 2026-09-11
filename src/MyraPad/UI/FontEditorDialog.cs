@@ -125,14 +125,18 @@ namespace MyraPad.UI
 				if (path.EndsWith(".ttf", StringComparison.InvariantCultureIgnoreCase))
 				{
 					// TTF font
-					var fontSystem = Studio.AssetManager.LoadFontSystem(path);
+					// We need to prepend AMB path rooted symbol since we're using absolute path
+					// Otherwise this code will crash on Linux
+					var fontSystem = Studio.AssetManager.LoadFontSystem("@" + path);
 
 					font = fontSystem.GetFont(DefaultTTFFontSize);
 					font.Name = $"{path}{StylesheetFont.Separator}{DefaultTTFFontSize}";
 				} else
 				{
 					// FNT font
-					font = Studio.AssetManager.LoadFont(path);
+					// We need to prepend AMB path rooted symbol since we're using absolute path
+					// Otherwise this code will crash on Linux
+					font = Studio.AssetManager.LoadFont("@" + path);
 					font.Name = path;
 				}
 

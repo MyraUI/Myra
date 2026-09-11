@@ -6,6 +6,7 @@ using Myra.Graphics2D.TextureAtlases;
 using Myra.Graphics2D.UI.Styles;
 using FontStashSharp;
 using FontStashSharp.RichText;
+using System.IO;
 
 
 
@@ -56,6 +57,18 @@ namespace Myra
 			}
 		}
 
+		private static string NormalizePath(string path)
+		{
+			if (Path.IsPathRooted(path))
+			{
+				// We prepend AMB rooted path symbol to every rooted path in order to fix crashing on Linux
+				// This will prevent loading so called Rooted Paths from Base, but those arent used in the Myra anyway
+				return "@" + path;
+			}
+
+			return path;
+		}
+
 		/// <summary>
 		/// Loads a texture region by name, resolving it from the current stylesheet atlas or an asset manager.
 		/// </summary>
@@ -77,7 +90,7 @@ namespace Myra
 			}
 
 			var assetManager = customAssetManager ?? DefaultAssetManager;
-			return assetManager.LoadTextureRegion(assetName);
+			return assetManager.LoadTextureRegion(NormalizePath(assetName));
 		}
 
 		/// <summary>
@@ -95,7 +108,7 @@ namespace Myra
 			Color? color = null;
 			TintedRegion.TryParse(ref assetName, out color);
 
-			var region = LoadTextureRegion(assetName, customStylesheet, customAssetManager);
+			var region = LoadTextureRegion(NormalizePath(assetName), customStylesheet, customAssetManager);
 			if (color == null)
 			{
 				return region;
@@ -134,7 +147,7 @@ namespace Myra
 				}
 			}
 
-			return LoadImage(assetName, customStylesheet, customAssetManager);
+			return LoadImage(NormalizePath(assetName), customStylesheet, customAssetManager);
 		}
 
 		/// <summary>
@@ -193,7 +206,7 @@ namespace Myra
 			}
 			else
 			{
-				result = assetManager.LoadFont(assetName, fontSize);
+				result = assetManager.LoadFont(NormalizePath(assetName), fontSize);
 			}
 
 			result.Name = originalAssetName;

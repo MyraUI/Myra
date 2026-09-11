@@ -136,7 +136,9 @@ namespace MyraPad.UI
 					return;
 				}
 
-				var image = Studio.AssetManager.LoadTexture2D(MyraEnvironment.GraphicsDevice, dlg.FilePath);
+				// We need to prepend AMB path rooted symbol since we're using absolute path
+				// Otherwise this code will crash on Linux
+				var image = Studio.AssetManager.LoadTexture2D(MyraEnvironment.GraphicsDevice, "@" + dlg.FilePath);
 				Image = new TextureRegion(image)
 				{
 					Name = dlg.FilePath
