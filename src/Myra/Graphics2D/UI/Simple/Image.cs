@@ -166,17 +166,18 @@ namespace Myra.Graphics2D.UI
 		public Color Color { get; set; } = Color.White;
 
 		/// <summary>
+		/// Gets or sets the texture filtering override for this image, or null to use the global default set by <see cref="MyraEnvironment.ImageTextureFiltering"/>.
+		/// </summary>
+		[Category("Appearance")]
+		[DefaultValue(null)]
+		public TextureFiltering? TextureFiltering { get; set; }
+
+		/// <summary>
 		/// Gets or sets how the image is resized to fit available space.
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(ImageResizeMode.Stretch)]
 		public ImageResizeMode ResizeMode { get; set; }
-
-		/// <summary>
-		/// Gets or sets the texture filtering override for this image, or null to use the global default set by <see cref="MyraEnvironment.ImageTextureFiltering"/>.
-		/// </summary>
-		[DefaultValue(null)]
-		public TextureFiltering? TextureFiltering { get; set; }
 
 		/// <summary>
 		/// Measures the size required for the image, considering all image states (normal, over, pressed).
