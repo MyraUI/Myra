@@ -1,5 +1,6 @@
 ﻿using FontStashSharp.Interfaces;
 using Myra.Graphics2D;
+using System;
 using System.Drawing;
 using System.Numerics;
 using Color = FontStashSharp.FSColor;
@@ -20,7 +21,7 @@ namespace Myra.Platform
 	/// <summary>
 	/// Provides rendering functionality for the Myra UI framework.
 	/// </summary>
-	public interface IMyraRenderer
+	public interface IMyraRenderer: IDisposable
 	{
 		/// <summary>
 		/// Gets the texture manager for loading and managing textures.

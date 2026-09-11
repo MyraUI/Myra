@@ -57,6 +57,11 @@ namespace Myra.Samples.AllWidgets
 			}
 		}
 
+		public void Dispose()
+		{
+			_batch.Dispose();
+		}
+
 		public void Begin(TextureFiltering textureFiltering)
 		{
 			Env.Gl.Enable(EnableCap.ScissorTest);

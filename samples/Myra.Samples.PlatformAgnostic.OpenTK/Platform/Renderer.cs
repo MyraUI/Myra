@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Numerics;
 using FontStashSharp;
 using FontStashSharp.Interfaces;
-using Myra.Graphics2D;
 using Myra.Platform;
 using OpenTK.Graphics.OpenGL4;
 
@@ -23,6 +22,11 @@ namespace Myra.Samples.AllWidgets
 		public RendererType RendererType => RendererType.Quad;
 
 		public ITexture2DManager TextureManager => _textureManager;
+
+		public void Dispose()
+		{
+			_batch.Dispose();
+		}
 
 		public Rectangle Viewport
 		{

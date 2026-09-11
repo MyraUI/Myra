@@ -68,6 +68,11 @@ namespace Myra.Samples.AllWidgets
 			_batch = new SpriteBatch(GraphicsDevice);
 		}
 
+		public void Dispose()
+		{
+			_batch.Dispose();
+		}
+
 		public void Begin(TextureFiltering textureFiltering)
 		{
 			var samplerState = textureFiltering == TextureFiltering.Nearest ? SamplerState.PointClamp : SamplerState.LinearClamp;

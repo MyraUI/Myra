@@ -64,6 +64,12 @@ namespace Myra.Samples.AllWidgets
 			_batch.SetShaderProgram(_shaderProgram);
 		}
 
+		public void Dispose()
+		{
+			_batch.Dispose();
+			_shaderProgram.Dispose();
+		}
+
 		public void OnViewportChanged()
 		{
 			_shaderProgram.Projection = Matrix4x4.CreateOrthographicOffCenter(0, Device.Viewport.Width, Device.Viewport.Height, 0, 0, 1);

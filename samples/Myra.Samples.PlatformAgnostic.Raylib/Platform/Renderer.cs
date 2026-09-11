@@ -2,7 +2,6 @@ using System;
 using System.Numerics;
 using FontStashSharp;
 using FontStashSharp.Interfaces;
-using Myra.Graphics2D;
 using Myra.Platform;
 using Raylib_cs;
 using Rectangle = System.Drawing.Rectangle;
@@ -24,6 +23,10 @@ namespace Myra.Samples.AllWidgets
 		{
 			get => _scissor;
 			set => _scissor = value;
+		}
+
+		public void Dispose()
+		{
 		}
 
 		public void Begin(TextureFiltering textureFiltering)
