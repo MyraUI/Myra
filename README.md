@@ -11,6 +11,7 @@ Myra is a UI library for [MonoGame](http://www.monogame.net/), [FNA](https://git
 * **Skinning.** The default skin (borrowed from [VisUI](https://github.com/kotcrab/vis-ui)) can be replaced with a custom skin loaded from XML ([example](/samples/Myra.Samples.CustomUIStylesheet/Resources/ui_stylesheet.xmms)).
 * **MyraPad.** Standalone WYSIWYG MML based UI designer.
 * **Myra.PlatformAgnostic.** Version of the library that could be used in any C# game engine.
+* **Myra.Mcp.** Headless [MCP](https://modelcontextprotocol.io) server so AI coding agents (Claude Code, Codex) can validate, read, and save Myra `.xmmp` layouts through the real engine, plus discover the widget vocabulary. See [src/Myra.Mcp/README.md](/src/Myra.Mcp/README.md).
 
 ## Documentation
 [https://myraui.github.io/Myra/](https://myraui.github.io/Myra/)

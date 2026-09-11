@@ -1,0 +1,17 @@
+<Project>
+  <Project.ExportOptions />
+  <Grid ShowGridLines="True" ColumnSpacing="8" RowSpacing="8" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+    <Grid.ColumnsProportions>
+      <Proportion Type="Auto" />
+      <Proportion Type="Auto" />
+    </Grid.ColumnsProportions>
+    <Grid.RowsProportions>
+      <Proportion Type="Auto" />
+      <Proportion Type="Auto" />
+    </Grid.RowsProportions>
+    <Button Id="spawnUnit1">
+      <Image Renderable="MonoGameLogo.png" />
+    </Button>
+    <Label Text="Spawn Unit 1" Font="arial64.fnt" HorizontalAlignment="Center" Id="label" Grid.Row="1" />
+  </Grid>
+</Project>
