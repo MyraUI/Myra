@@ -170,7 +170,7 @@ namespace Myra.Graphics2D.UI
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(null)]
-		public TextureFiltering? TextureFiltering { get; set; } = Myra.TextureFiltering.Linear;
+		public TextureFiltering? TextureFiltering { get; set; }
 
 		/// <summary>
 		/// Gets or sets how the image is resized to fit available space.
