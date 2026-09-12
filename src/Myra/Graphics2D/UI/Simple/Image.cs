@@ -170,7 +170,7 @@ namespace Myra.Graphics2D.UI
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(null)]
-		public TextureFiltering? TextureFiltering { get; set; }
+		public TextureFiltering? TextureFiltering { get; set; } = Myra.TextureFiltering.Linear;
 
 		/// <summary>
 		/// Gets or sets how the image is resized to fit available space.
@@ -255,6 +255,7 @@ namespace Myra.Graphics2D.UI
 			FocusedRenderable = imageStyle.FocusedImage;
 			OverRenderable = imageStyle.OverImage;
 			PressedRenderable = imageStyle.PressedImage;
+			TextureFiltering = imageStyle.TextureFiltering;
 		}
 
 		/// <summary>

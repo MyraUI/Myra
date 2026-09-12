@@ -28,7 +28,7 @@ namespace Myra.Graphics2D
 		/// <summary>
 		/// Low-level rendering
 		/// </summary>
-		private class Renderer: IDisposable
+		private class Renderer : IDisposable
 		{
 #if MONOGAME
 			private static SamplerState _textureFilteringAnisotropic = new SamplerState
@@ -148,7 +148,6 @@ namespace Myra.Graphics2D
 					if (_sdfTextBatch == null)
 					{
 						_sdfTextBatch = new SDFTextBatch(MyraEnvironment.GraphicsDevice);
-						_sdfTextBatch.RasterizerState = UIRasterizerState;
 					}
 
 					return _sdfTextBatch;
@@ -453,7 +452,10 @@ namespace Myra.Graphics2D
 						break;
 					case ModeType.SDF:
 #if MONOGAME || FNA
-						SDFTextBatch.Begin();
+						var sdfTextBatch = SDFTextBatch;
+						sdfTextBatch.RasterizerState = UIRasterizerState;
+						sdfTextBatch.Supersampling = MyraEnvironment.SDFSupersampling;
+						sdfTextBatch.Begin();
 						break;
 #else
 						throw new NotSupportedException("SDF rendering is not supported by Myra.Stride/Myra.PlatformaAgnostic.");

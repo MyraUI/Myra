@@ -323,6 +323,11 @@ namespace Myra
 		public static TextureFiltering TextTextureFiltering { get; set; } = TextureFiltering.Nearest;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether supersampling is used when rendering SDF text to improve quality when scaling.
+		/// </summary>
+		public static bool SDFSupersampling { get; set; } = true;
+
+		/// <summary>
 		/// Gets or sets a value indicating whether text rendering should be smoothed (especially when scaling) at the cost of performance.
 		/// </summary>
 		[Obsolete("Use TextTextureFiltering")]

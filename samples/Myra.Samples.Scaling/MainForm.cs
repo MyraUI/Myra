@@ -75,6 +75,7 @@ public partial class MainForm
 				FontSystemDefaults.KernelWidth = 0;
 				FontSystemDefaults.KernelHeight = 0;
 				FontSystemDefaults.FixedSDFFontSize = SDFSettings.FixedFontSize;
+				MyraEnvironment.SDFSupersampling = SDFSettings.Supersampling;
 				break;
 		}
 
