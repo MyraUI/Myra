@@ -282,7 +282,7 @@ namespace Myra.Graphics2D.UI
 			{
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch,
-				Height = item.Height,
+				Height = item.Height.HasValue ? Dimension.Pixel(item.Height.Value) : Dimension.Auto,
 				Content = panel,
 				ButtonsContainer = _gridButtons
 			};

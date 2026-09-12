@@ -142,7 +142,7 @@ namespace Myra.Tests
 
 			Assert.Equal(HorizontalAlignment.Center, textBox.HorizontalAlignment);
 			Assert.Equal(VerticalAlignment.Center, textBox.VerticalAlignment);
-			Assert.Equal(100, textBox.Width);
+			Assert.Equal(Dimension.Pixel(100), textBox.Width);
 		}
 	}
 }

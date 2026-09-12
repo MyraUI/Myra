@@ -19,8 +19,8 @@ namespace Myra.Tests
 			Assert.IsType<ListView>(panel.Widgets[0]);
 			var listView = (ListView)panel.Widgets[0];
 
-			Assert.Equal(200, listView.Width);
-			Assert.Equal(200, listView.Height);
+			Assert.Equal(Dimension.Pixel(200), listView.Width);
+			Assert.Equal(Dimension.Pixel(200), listView.Height);
 			Assert.Equal(HorizontalAlignment.Center, listView.HorizontalAlignment);
 			Assert.Equal(VerticalAlignment.Center, listView.VerticalAlignment);
 			Assert.Equal(6, listView.Widgets.Count);
@@ -92,8 +92,8 @@ namespace Myra.Tests
 
 			Assert.IsType<Image>(horizontalStackPanel.Widgets[0]);
 			var image1 = (Image)horizontalStackPanel.Widgets[0];
-			Assert.Equal(16, image1.Width);
-			Assert.Equal(16, image1.Height);
+			Assert.Equal(Dimension.Pixel(16), image1.Width);
+			Assert.Equal(Dimension.Pixel(16), image1.Height);
 			Assert.NotNull(image1.Renderable);
 			Assert.Equal(64, image1.Renderable.Size.X);
 			Assert.Equal(64, image1.Renderable.Size.Y);
