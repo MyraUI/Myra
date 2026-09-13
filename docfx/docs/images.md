@@ -68,15 +68,29 @@ image.Renderable = new TextureRegion(texture);
   _**Note**. It's also possible to use TextureRegion as IBrush. However usually it won't make much sense, since it would result in the TextureRegion stretched over the rectangle IBrush is drawn at._
 
 ### NinePatchRegion
-[NinePatchRegion](https://github.com/rds1983/Myra/blob/master/src/Myra/Graphics2D/TextureAtlases/NinePatchRegion.cs) represents region with unstretchable border and stretchable center. 
+[NinePatchRegion](https://github.com/rds1983/Myra/blob/master/src/Myra/Graphics2D/TextureAtlases/NinePatchRegion.cs) is an IImage that uses the **nine-patch** technique: it can be stretched to any size while keeping its corners and borders looking exactly like in the source texture.
 
-It could be used following way:
+An ordinary [TextureRegion](#textureregion) stretches every pixel uniformly, which distorts images whose look depends on their edges - a rounded button becomes an oval, a 1px border becomes 2px thick. Nine-patch fixes this by dividing the region into a 3×3 grid:
+
+```
++-------+------+-------+
+| corner| edge | corner|
++-------+------+-------+
+| edge  |center| edge  |
++-------+------+-------+
+| corner| edge | corner|
++-------+------+-------+
+```
+
+The four **corners** are always drawn at original size, the four **edges** stretch along one axis only (top/bottom horizontally, left/right vertically), and the **center** stretches along both. This keeps smooth corners and borders crisp at any size, which is why all Myra widget backgrounds use it.
+
+The `Thickness` parameter defines that border, in **source-texture pixels**: `Left`/`Right` set the width of left/right columns, `Top`/`Bottom` the height of top/bottom rows. Everything inside those borders (the middle column `Width - Left - Right` by the middle row `Height - Top - Bottom`) is what actually stretches. So a corner with `Left = 4, Top = 4` stays 4×4 pixels no matter the destination size.
+
 ```c#
 widget.Background = new NinePatchRegion(texture, new Rectangle(10, 10, 50, 50), 
                                         new Thickness {Left = 2, Right = 2, 
                                                        Top = 2, Bottom = 2});
 ```
-  _**Note**. Since NinePatchRegion is stretchable, it makes a lot of sense to use it as IBrush. In fact all backgrounds of the Myra widgets are NinePatchRegion._
 
 ### TextureRegionAtlas
 [TextureRegionAtlas](https://github.com/rds1983/Myra/blob/master/src/Myra/Graphics2D/TextureAtlases/TextureRegionAtlas.cs) is collection of texture regions(each could be nine patch) accessible by string key.
