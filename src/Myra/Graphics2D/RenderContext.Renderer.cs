@@ -194,8 +194,6 @@ namespace Myra.Graphics2D
 
 			public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, float depth = 0.0f)
 			{
-				SetState(ModeType.Sprite, ImageTextureFiltering);
-
 				Vector2 sz;
 				if (sourceRectangle != null)
 				{
