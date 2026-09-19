@@ -12,6 +12,7 @@ namespace Myra
 	public static class DefaultAssets
 	{
 		private static AssetManager _assetManager;
+		private static FontSystem _debugFontSystem;
 		private static SpriteFontBase _debugFont;
 		private static Stylesheet _defaultStylesheet, _defaultStylesheet2x;
 		private static TextureRegion _whiteRegion;
@@ -30,6 +31,23 @@ namespace Myra
 		}
 
 		/// <summary>
+		/// Gets the font system used for rendering debug information. Any size can be requested
+		/// via <see cref="FontSystem.GetFont(float)"/>.
+		/// </summary>
+		public static FontSystem DebugFontSystem
+		{
+			get
+			{
+				if (_debugFontSystem == null)
+				{
+					_debugFontSystem = AssetManager.LoadFontSystem("Inter-Regular.ttf");
+				}
+
+				return _debugFontSystem;
+			}
+		}
+
+		/// <summary>
 		/// Gets the font used for rendering debug information, such as the widget info overlay.
 		/// </summary>
 		public static SpriteFontBase DebugFont
@@ -38,7 +56,7 @@ namespace Myra
 			{
 				if (_debugFont == null)
 				{
-					_debugFont = AssetManager.LoadFont("Inter-Regular.ttf:32");
+					_debugFont = DebugFontSystem.GetFont(32);
 				}
 
 				return _debugFont;
@@ -108,6 +126,7 @@ namespace Myra
 			_defaultStylesheet = null;
 			_defaultStylesheet2x = null;
 			_debugFont = null;
+			_debugFontSystem = null;
 
 			if (_assetManager != null)
 			{

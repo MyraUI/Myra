@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Myra;
 using Myra.Graphics2D;
@@ -10,7 +11,8 @@ namespace Myra.Samples;
 /// <summary>
 /// An <see cref="IBrush"/> that renders Matrix-style "digital rain": bright green digits
 /// continuously falling through the destination rectangle. Each glyph is drawn with
-/// <see cref="RenderContext.DrawString"/> using <see cref="DefaultAssets.DebugFont"/>.
+/// <see cref="RenderContext.DrawString"/>, using fonts taken from
+/// <see cref="DefaultAssets.DebugFontSystem"/> at a diverse range of sizes.
 /// </summary>
 public class MatrixBrush : IBrush
 {
@@ -22,21 +24,30 @@ public class MatrixBrush : IBrush
 	private sealed class Stream
 	{
 		public char[] Chars = Array.Empty<char>();
-		public float Head;   // position of the leading glyph in cells
-		public float Speed;  // glyphs per second
-		public int Length;   // number of glyphs in the stream
+		public SpriteFontBase Font;
+		public float CellSize; // glyph size and cell stride for this column
+		public float X;        // left edge of this column in local coordinates
+		public float Head;     // position of the leading glyph in cells
+		public float Speed;    // glyphs per second
+		public int Length;     // number of glyphs in the stream
 	}
 
 	private readonly Random _random;
 	private readonly List<Stream> _streams = new List<Stream>();
+	private readonly Dictionary<int, SpriteFontBase> _fontCache = new Dictionary<int, SpriteFontBase>();
 
 	private DateTime _lastTime = DateTime.UtcNow;
 	private int _columns = -1;
 
 	/// <summary>
-	/// Gets or sets the size of a rain cell (and therefore the glyph size) in pixels.
+	/// Gets or sets the smallest font size (in pixels) used by any rain column.
 	/// </summary>
-	public float CellSize { get; set; } = 22f;
+	public float MinFontSize { get; set; } = 14f;
+
+	/// <summary>
+	/// Gets or sets the largest font size (in pixels) used by any rain column.
+	/// </summary>
+	public float MaxFontSize { get; set; } = 40f;
 
 	/// <summary>
 	/// Gets or sets the seed used by the random generator to keep the rain reproducible.
@@ -62,26 +73,21 @@ public class MatrixBrush : IBrush
 		// Subtle dark backdrop so the rain always reads on any surface
 		DefaultAssets.WhiteRegion.Draw(context, dest, new Color(2, 8, 4, 235));
 
-		var font = DefaultAssets.DebugFont;
-		var columns = Math.Max(1, (int)(dest.Width / CellSize));
-		var heightInCells = dest.Height / CellSize;
+		var avgCell = (MinFontSize + MaxFontSize) * 0.5f;
+		var columns = Math.Max(1, (int)(dest.Width / avgCell));
 
 		EnsureStreams(columns);
-		Advance((float)(DateTime.UtcNow - _lastTime).TotalSeconds, heightInCells);
+		Advance((float)(DateTime.UtcNow - _lastTime).TotalSeconds, dest.Height);
 		_lastTime = DateTime.UtcNow;
-
-		// Fit the glyphs into a cell
-		var scale = CellSize / font.LineHeight;
-		var glyphSize = font.MeasureString("0") * scale;
-		var offsetX = (CellSize - glyphSize.X) * 0.5f;
-		var offsetY = (CellSize - glyphSize.Y) * 0.5f;
 
 		var tint = color.A / 255f;
 
-		for (var c = 0; c < _streams.Count; c++)
+		foreach (var stream in _streams)
 		{
-			var stream = _streams[c];
-			var baseX = dest.X + c * CellSize;
+			var heightInCells = dest.Height / stream.CellSize;
+			var glyphSize = stream.Font.MeasureString("0");
+			var offsetX = (stream.CellSize - glyphSize.X) * 0.5f;
+			var offsetY = (stream.CellSize - glyphSize.Y) * 0.5f;
 
 			for (var i = 0; i < stream.Length; i++)
 			{
@@ -94,16 +100,31 @@ public class MatrixBrush : IBrush
 				var alpha = i == 0 ? 255 : Math.Max(0, 255 - (int)(255f * i / stream.Length));
 				var glyphColor = i == 0 ? HeadColor : BodyColor;
 
-				context.DrawString(font, stream.Chars[i].ToString(),
-					new Vector2(baseX + offsetX, dest.Y + row * CellSize + offsetY),
-					WithAlpha(glyphColor, (byte)(alpha * tint)), new Vector2(scale));
+				context.DrawString(stream.Font, stream.Chars[i].ToString(),
+					new Vector2(dest.X + stream.X + offsetX, dest.Y + row * stream.CellSize + offsetY),
+					WithAlpha(glyphColor, (byte)(alpha * tint)), Vector2.One);
 			}
 		}
 	}
 
 	/// <summary>
+	/// Gets a <see cref="SpriteFontBase"/> of the requested size, reusing previously
+	/// requested sizes from the debug font system.
+	/// </summary>
+	private SpriteFontBase GetFont(int size)
+	{
+		if (!_fontCache.TryGetValue(size, out var font))
+		{
+			font = DefaultAssets.DebugFontSystem.GetFont(size);
+			_fontCache[size] = font;
+		}
+
+		return font;
+	}
+
+	/// <summary>
 	/// Recreates the streams when the number of columns changes (e.g. the destination width or
-	/// the cell size was modified).
+	/// the font size range was modified).
 	/// </summary>
 	private void EnsureStreams(int columns)
 	{
@@ -118,7 +139,7 @@ public class MatrixBrush : IBrush
 		for (var i = 0; i < _columns; i++)
 		{
 			var stream = new Stream();
-			StartStream(stream);
+			StartStream(stream, i);
 			_streams.Add(stream);
 		}
 	}
@@ -127,20 +148,23 @@ public class MatrixBrush : IBrush
 	/// Advances the falling glyphs based on the elapsed wall-clock time. Streams are recycled
 	/// once they have fully left the bottom of the destination rectangle.
 	/// </summary>
-	private void Advance(float elapsed, float heightInCells)
+	private void Advance(float elapsed, float height)
 	{
 		if (elapsed <= 0)
 		{
 			return;
 		}
 
-		foreach (var stream in _streams)
+		for (var i = 0; i < _streams.Count; i++)
 		{
+			var stream = _streams[i];
+			var heightInCells = height / stream.CellSize;
+
 			stream.Head += stream.Speed * elapsed;
 
 			if (stream.Head - stream.Length + 1 > heightInCells)
 			{
-				StartStream(stream);
+				StartStream(stream, i);
 				continue;
 			}
 
@@ -152,13 +176,23 @@ public class MatrixBrush : IBrush
 		}
 	}
 
-	private void StartStream(Stream stream)
+	private void StartStream(Stream stream, int index)
 	{
 		stream.Length = _random.Next(6, 18);
-		stream.Speed = 9f + (float)_random.NextDouble() * 14f;
+		stream.Speed = 5f + (float)_random.NextDouble() * 14f;
+		stream.CellSize = _random.Next((int)MinFontSize, (int)MaxFontSize + 1);
+		stream.Font = GetFont((int)stream.CellSize);
 		stream.Chars = NewStream(stream.Length);
 		// Begin above the viewport so the stream scrolls in from the top
 		stream.Head = -(stream.Length * 0.5f + (float)_random.NextDouble() * stream.Length * 0.5f);
+
+		// Column offset relative to the destination origin, based on the widths of the
+		// columns to the left (their CellSize values at the time this stream started)
+		stream.X = 0;
+		for (var i = 0; i < index && i < _streams.Count; i++)
+		{
+			stream.X += _streams[i].CellSize;
+		}
 	}
 
 	private char[] NewStream(int length)

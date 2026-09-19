@@ -102,12 +102,11 @@ public class CustomBrushesGame : Game
 
 	private Widget BuildUi()
 	{
-		var layout = new VerticalStackPanel
+		var layout = new Panel
 		{
 			HorizontalAlignment = HorizontalAlignment.Stretch,
 			VerticalAlignment = VerticalAlignment.Stretch,
-			Padding = new Thickness(32),
-			Spacing = 24
+			Padding = new Thickness(32)
 		};
 
 		layout.Widgets.Add(new Label
@@ -119,6 +118,7 @@ public class CustomBrushesGame : Game
 		var cards = new HorizontalStackPanel
 		{
 			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
 			Spacing = 40
 		};
 
@@ -127,31 +127,6 @@ public class CustomBrushesGame : Game
 		cards.Widgets.Add(CreateCard("AnimatedGifBrush\ndecoded with StbImageSharp", _animatedGifBrush));
 
 		layout.Widgets.Add(cards);
-
-		layout.Widgets.Add(new Label
-		{
-			Text = "One AnimatedGifBrush instance reused by several widgets (the middle one is semi-transparent):",
-			HorizontalAlignment = HorizontalAlignment.Center
-		});
-
-		var tiles = new HorizontalStackPanel
-		{
-			HorizontalAlignment = HorizontalAlignment.Center,
-			Spacing = 20
-		};
-
-		for (var i = 0; i < 5; i++)
-		{
-			tiles.Widgets.Add(new Panel
-			{
-				Background = _animatedGifBrush,
-				Width = 96,
-				Height = 96,
-				Opacity = i == 2 ? 0.5f : 1f
-			});
-		}
-
-		layout.Widgets.Add(tiles);
 
 		return layout;
 	}
