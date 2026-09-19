@@ -1,0 +1,12 @@
+<Project>
+  <Project.ExportOptions />
+  <Panel>
+    <CheckButton Border="#4BD961FF" BorderThickness="1" Padding="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <VerticalStackPanel>
+        <Label Text="Text 1" />
+        <Label Text="Text 2" />
+        <Label Text="Text 3" />
+      </VerticalStackPanel>
+    </CheckButton>
+  </Panel>
+</Project>
