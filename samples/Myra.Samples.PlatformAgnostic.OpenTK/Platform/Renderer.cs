@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Numerics;
 using FontStashSharp;
 using FontStashSharp.Interfaces;
+using Myra.Graphics2D;
 using Myra.Platform;
 using OpenTK.Graphics.OpenGL4;
 

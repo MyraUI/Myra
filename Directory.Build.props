@@ -6,10 +6,10 @@
     <PackageProjectUrl>https://github.com/rds1983/Myra</PackageProjectUrl>
     <RootNamespace>Myra</RootNamespace>
     <Description>UI Library for MonoGame, FNA and Stride</Description>
-    <VersionPrefix>1.6.6</VersionPrefix>
+    <VersionPrefix>1.6.7</VersionPrefix>
     <AMBVersion>0.7.3</AMBVersion>
-    <FontStashSharpVersion>1.6.0</FontStashSharpVersion>
-    <XNAssetsVersion>0.8.6</XNAssetsVersion>
+    <FontStashSharpVersion>1.6.1</FontStashSharpVersion>
+    <XNAssetsVersion>0.8.8</XNAssetsVersion>
     <MonoGameVersion>3.8.0.1641</MonoGameVersion>
     <AppMonoGameVersion>3.8.5.1</AppMonoGameVersion>
     <StrideVersion>4.2.0.2067</StrideVersion>
