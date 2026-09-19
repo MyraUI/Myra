@@ -20,8 +20,10 @@ jobs:
       run: dotnet build build\Myra.Stride.sln --configuration Release
     - name: Build Myra.PlatformAgnostic
       run: dotnet build build\Myra.PlatformAgnostic.sln --configuration Release
-    - name: Test
+    - name: Test Myra.MonoGame
       run: dotnet test build\Myra.MonoGame.sln --verbosity normal
+    - name: Test Myra.PlatformAgnostic
+      run: dotnet test build\Myra.PlatformAgnostic.sln --verbosity normal
     - name: Install NuGet
       uses: NuGet/setup-nuget@v2
     - name: Publish Myra.MonoGame to MyGet
