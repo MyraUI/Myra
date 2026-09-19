@@ -38,12 +38,6 @@ namespace Myra.Graphics2D.UI.Styles
 		public IImage PressedImage { get; set; }
 
 		/// <summary>
-		/// Gets or sets the texture filtering override for this image, or null to use the global default set by <see cref="MyraEnvironment.ImageTextureFiltering"/>.
-		/// </summary>
-		[Category("Appearance")]
-		public TextureFiltering? TextureFiltering { get; set; }
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="ImageStyle"/> class.
 		/// </summary>
 		public ImageStyle()
@@ -61,7 +55,6 @@ namespace Myra.Graphics2D.UI.Styles
 			OverImage = style.OverImage;
 			FocusedImage = style.FocusedImage;
 			PressedImage = style.PressedImage;
-			TextureFiltering = style.TextureFiltering;
 		}
 
 		/// <summary>

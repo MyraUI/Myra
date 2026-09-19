@@ -3,7 +3,7 @@
   <Panel>
     <Button HorizontalAlignment="Center" VerticalAlignment="Center">
       <Panel>
-        <Image Renderable="LogoOnly_64px.png" Border="#0379FFFF" HorizontalAlignment="Center" />
+        <Image Renderable="LogoOnly_64px.png" HorizontalAlignment="Center" Border="#0379FFFF" />
         <Label Text="Some Text" HorizontalAlignment="Center" VerticalAlignment="Center" />
       </Panel>
     </Button>

@@ -30,7 +30,9 @@ using Stride.Engine;
 using Stride.Graphics;
 using Stride.Core.Mathematics;
 using Stride.Input;
+using Myra.Graphics2D;
 #else
+using Myra.Graphics2D;
 using Myra.Platform;
 using System.Drawing;
 using Color = FontStashSharp.FSColor;
@@ -38,19 +40,6 @@ using Color = FontStashSharp.FSColor;
 
 namespace Myra
 {
-	/// <summary>
-	/// Specifies the texture filtering mode used during rendering.
-	/// </summary>
-	public enum TextureFiltering
-	{
-		/// <summary>Nearest neighbor filtering (fastest but less smooth).</summary>
-		Nearest,
-		/// <summary>Linear filtering (bilinear interpolation).</summary>
-		Linear,
-		/// <summary>Anisotropic filtering (highest quality).</summary>
-		Anisotropic
-	}
-
 	/// <summary>
 	/// Provides global configuration and utility methods for Myra UI framework.
 	/// </summary>

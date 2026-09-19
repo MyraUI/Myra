@@ -30,6 +30,7 @@ namespace Myra.Graphics2D.TextureAtlases
 		private const string ImageName = "Image";
 		private const string TextureRegionName = "TextureRegion";
 		private const string NinePatchRegionName = "NinePatchRegion";
+		private const string FilterName = "Filter";
 		private const string LeftName = "Left";
 		private const string TopName = "Top";
 		private const string WidthName = "Width";
@@ -141,6 +142,11 @@ namespace Myra.Graphics2D.TextureAtlases
 				entry.SetAttributeValue(WidthName, region.Bounds.Width);
 				entry.SetAttributeValue(HeightName, region.Bounds.Height);
 
+				if (region.Filter != null)
+				{
+					entry.SetAttributeValue(FilterName, region.Filter.Value.ToString());
+				}
+
 				if (asNinePatch != null)
 				{
 					entry.SetAttributeValue(NinePatchLeftName, asNinePatch.Info.Left);
@@ -209,6 +215,18 @@ namespace Myra.Graphics2D.TextureAtlases
 				}
 
 				region.Name = id;
+
+				var filterAttribute = entry.Attribute(FilterName);
+				if (filterAttribute != null)
+				{
+					TextureFiltering textureFiltering;
+					if (!Enum.TryParse(filterAttribute.Value, true, out textureFiltering))
+					{
+						throw new Exception($"Unsupported texture filtering '{filterAttribute.Value}' of region '{id}'.");
+					}
+
+					region.Filter = textureFiltering;
+				}
 
 				result[id] = region;
 			}

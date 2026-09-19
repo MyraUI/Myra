@@ -21,7 +21,7 @@ namespace Myra.Graphics2D.TextureAtlases
 	{
 		private readonly Thickness _info;
 
-		private readonly TextureRegion _topLeft,
+		private readonly Rectangle? _topLeft,
 			_topCenter,
 			_topRight,
 			_centerLeft,
@@ -57,29 +57,20 @@ namespace Myra.Graphics2D.TextureAtlases
 			{
 				if (info.Left > 0)
 				{
-					_topLeft = new TextureRegion(texture,
-						new Rectangle(bounds.X,
-							y,
-							info.Left,
-							info.Top));
+					_topLeft = new Rectangle(bounds.X, y, info.Left, info.Top);
 				}
 
 				if (centerWidth > 0)
 				{
-					_topCenter = new TextureRegion(texture,
-						new Rectangle(bounds.X + info.Left,
+					_topCenter = new Rectangle(bounds.X + info.Left,
 							y,
 							centerWidth,
-							info.Top));
+							info.Top);
 				}
 
 				if (info.Right > 0)
 				{
-					_topRight = new TextureRegion(texture,
-						new Rectangle(bounds.X + info.Left + centerWidth,
-							y,
-							info.Right,
-							info.Top));
+					_topRight = new Rectangle(bounds.X + info.Left + centerWidth, y, info.Right, info.Top);
 				}
 			}
 
@@ -88,29 +79,17 @@ namespace Myra.Graphics2D.TextureAtlases
 			{
 				if (info.Left > 0)
 				{
-					_centerLeft = new TextureRegion(texture,
-						new Rectangle(bounds.X,
-							y,
-							info.Left,
-							centerHeight));
+					_centerLeft = new Rectangle(bounds.X, y, info.Left, centerHeight);
 				}
 
 				if (centerWidth > 0)
 				{
-					_center = new TextureRegion(texture,
-						new Rectangle(bounds.X + info.Left,
-							y,
-							centerWidth,
-							centerHeight));
+					_center = new Rectangle(bounds.X + info.Left, y, centerWidth, centerHeight);
 				}
 
 				if (info.Right > 0)
 				{
-					_centerRight = new TextureRegion(texture,
-						new Rectangle(bounds.X + info.Left + centerWidth,
-							y,
-							info.Right,
-							centerHeight));
+					_centerRight = new Rectangle(bounds.X + info.Left + centerWidth, y, info.Right, centerHeight);
 				}
 			}
 
@@ -119,29 +98,17 @@ namespace Myra.Graphics2D.TextureAtlases
 			{
 				if (info.Left > 0)
 				{
-					_bottomLeft = new TextureRegion(texture,
-						new Rectangle(bounds.X,
-							y,
-							info.Left,
-							info.Bottom));
+					_bottomLeft = new Rectangle(bounds.X, y, info.Left, info.Bottom);
 				}
 
 				if (centerWidth > 0)
 				{
-					_bottomCenter = new TextureRegion(texture,
-						new Rectangle(bounds.X + info.Left,
-							y,
-							centerWidth,
-							info.Bottom));
+					_bottomCenter = new Rectangle(bounds.X + info.Left, y, centerWidth, info.Bottom);
 				}
 
 				if (info.Right > 0)
 				{
-					_bottomRight = new TextureRegion(texture,
-						new Rectangle(bounds.X + info.Left + centerWidth,
-							y,
-							info.Right,
-							info.Bottom));
+					_bottomRight = new Rectangle(bounds.X + info.Left + centerWidth, y, info.Right, info.Bottom);
 				}
 			}
 		}
@@ -155,6 +122,8 @@ namespace Myra.Graphics2D.TextureAtlases
 		public override void Draw(RenderContext context, Rectangle dest, Color color)
 		{
 			var y = dest.Y;
+
+			var textureFiltering = Filter;
 
 			var left = Math.Min(_info.Left, dest.Width);
 			var top = Math.Min(_info.Top, dest.Height);
@@ -175,94 +144,49 @@ namespace Myra.Graphics2D.TextureAtlases
 
 			if (_topLeft != null)
 			{
-				_topLeft.Draw(context,
-					new Rectangle(dest.X,
-						y,
-						left,
-						top),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X, y, left, top), _topLeft.Value, color, textureFiltering: textureFiltering);
 			}
 
 			if (_topCenter != null && centerWidth > 0)
 			{
-				_topCenter.Draw(context,
-					new Rectangle(dest.X + left,
-						y,
-						centerWidth,
-						top),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X + left, y, centerWidth, top), _topCenter.Value, color, textureFiltering: textureFiltering);
 			}
 
 			if (_topRight != null)
 			{
-				_topRight.Draw(context,
-					new Rectangle(dest.X + Info.Left + centerWidth,
-						y,
-						right,
-						top),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X + Info.Left + centerWidth, y, right, top), _topRight.Value, color, textureFiltering: textureFiltering);
 			}
 
 			y += top;
 			if (_centerLeft != null && centerHeight > 0)
 			{
-				_centerLeft.Draw(context,
-					new Rectangle(dest.X,
-						y,
-						left,
-						centerHeight),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X, y, left, centerHeight), _centerLeft.Value, color, textureFiltering: textureFiltering);
 			}
 
 			if (_center != null && centerWidth > 0 && centerHeight > 0)
 			{
-				_center.Draw(context,
-					new Rectangle(dest.X + left,
-						y,
-						centerWidth,
-						centerHeight),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X + left, y, centerWidth, centerHeight), _center.Value, color, textureFiltering: textureFiltering);
 			}
 
 			if (_centerRight != null && centerHeight > 0)
 			{
-				_centerRight.Draw(context,
-					new Rectangle(dest.X + Info.Left + centerWidth,
-						y,
-						right,
-						centerHeight),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X + Info.Left + centerWidth, y, right, centerHeight), _centerRight.Value, color, textureFiltering: textureFiltering);
 			}
 
 			y += centerHeight;
 			if (_bottomLeft != null)
 			{
-				_bottomLeft.Draw(context,
-					new Rectangle(dest.X,
-						y,
-						left,
-						bottom),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X, y, left, bottom), _bottomLeft.Value, color, textureFiltering: textureFiltering);
 			}
 
 			if (_bottomCenter != null && centerWidth > 0)
 			{
-				_bottomCenter.Draw(context,
-					new Rectangle(dest.X + left,
-						y,
-						centerWidth,
-						bottom),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X + left, y, centerWidth, bottom), _bottomCenter.Value, color, textureFiltering: textureFiltering);
 			}
 
 			if (_bottomRight != null)
 			{
-				_bottomRight.Draw(context,
-					new Rectangle(dest.X + Info.Left + centerWidth,
-						y,
-						right,
-						bottom),
-					color);
+				context.Draw(Texture, new Rectangle(dest.X + Info.Left + centerWidth, y, right, bottom), _bottomRight.Value, color, textureFiltering: textureFiltering);
 			}
 		}
 	}

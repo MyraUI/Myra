@@ -136,8 +136,6 @@ namespace Myra.Graphics2D
 
 			public float Opacity { get; set; }
 
-			public TextureFiltering ImageTextureFiltering { get; set; }
-			public TextureFiltering TextTextureFiltering { get; set; }
 
 #if MONOGAME || FNA
 
@@ -192,7 +190,7 @@ namespace Myra.Graphics2D
 				Opacity *= opacity;
 			}
 
-			public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, float depth = 0.0f)
+			public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, float depth, TextureFiltering? textureFiltering)
 			{
 				Vector2 sz;
 				if (sourceRectangle != null)
@@ -220,12 +218,12 @@ namespace Myra.Graphics2D
 
 				var pos = new Vector2(destinationRectangle.X, destinationRectangle.Y);
 				var scale = new Vector2(destinationRectangle.Width / sz.X, destinationRectangle.Height / sz.Y);
-				Draw(texture, pos, sourceRectangle, color, rotation, scale, depth);
+				Draw(texture, pos, sourceRectangle, color, rotation, scale, depth, textureFiltering);
 			}
 
-			public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 scale, float depth = 0.0f)
+			public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 scale, float depth, TextureFiltering? textureFiltering)
 			{
-				SetState(ModeType.Sprite, ImageTextureFiltering);
+				SetState(ModeType.Sprite, textureFiltering ?? MyraEnvironment.ImageTextureFiltering);
 
 				color = CrossEngineStuff.MultiplyColor(color, Opacity);
 				scale *= Transform.Scale;
@@ -471,7 +469,7 @@ namespace Myra.Graphics2D
 				switch (font.FontRasterizationMode)
 				{
 					case FontRasterizationMode.Standard:
-						SetState(ModeType.Sprite, TextTextureFiltering);
+						SetState(ModeType.Sprite, MyraEnvironment.TextTextureFiltering);
 						break;
 					case FontRasterizationMode.SDF:
 						SetState(ModeType.SDF, null);

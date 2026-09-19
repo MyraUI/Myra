@@ -166,13 +166,6 @@ namespace Myra.Graphics2D.UI
 		public Color Color { get; set; } = Color.White;
 
 		/// <summary>
-		/// Gets or sets the texture filtering override for this image, or null to use the global default set by <see cref="MyraEnvironment.ImageTextureFiltering"/>.
-		/// </summary>
-		[Category("Appearance")]
-		[DefaultValue(null)]
-		public TextureFiltering? TextureFiltering { get; set; }
-
-		/// <summary>
 		/// Gets or sets how the image is resized to fit available space.
 		/// </summary>
 		[Category("Behavior")]
@@ -228,17 +221,7 @@ namespace Myra.Graphics2D.UI
 				bounds.Height = (int)(bounds.Width * aspect);
 			}
 
-			var oldTextureFiltering = context.ImageTextureFiltering;
-			if (TextureFiltering != null)
-			{
-				context.ImageTextureFiltering = TextureFiltering.Value;
-			}
 			image.Draw(context, bounds, Color);
-
-			if (TextureFiltering != null)
-			{
-				context.ImageTextureFiltering = oldTextureFiltering;
-			}
 		}
 
 		/// <summary>
@@ -255,7 +238,6 @@ namespace Myra.Graphics2D.UI
 			FocusedRenderable = imageStyle.FocusedImage;
 			OverRenderable = imageStyle.OverImage;
 			PressedRenderable = imageStyle.PressedImage;
-			TextureFiltering = imageStyle.TextureFiltering;
 		}
 
 		/// <summary>

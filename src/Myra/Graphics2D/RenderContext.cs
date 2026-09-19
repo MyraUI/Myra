@@ -19,6 +19,19 @@ using Color = FontStashSharp.FSColor;
 namespace Myra.Graphics2D
 {
 	/// <summary>
+	/// Specifies the texture filtering mode used during rendering.
+	/// </summary>
+	public enum TextureFiltering
+	{
+		/// <summary>Nearest neighbor filtering (fastest but less smooth).</summary>
+		Nearest,
+		/// <summary>Linear filtering (bilinear interpolation).</summary>
+		Linear,
+		/// <summary>Anisotropic filtering (highest quality).</summary>
+		Anisotropic
+	}
+
+	/// <summary>
 	/// Provides rendering context for drawing 2D graphics including shapes, text, and textured regions.
 	/// </summary>
 	public partial class RenderContext : IDisposable
@@ -45,26 +58,6 @@ namespace Myra.Graphics2D
 			set => _renderer.Opacity = value;
 		}
 
-		/// <summary>
-		/// Gets or sets the texture filtering mode used when rendering images.
-		/// </summary>
-		public TextureFiltering ImageTextureFiltering
-		{
-			get => _renderer.ImageTextureFiltering;
-
-			set => _renderer.ImageTextureFiltering = value;
-		}
-
-		/// <summary>
-		/// Gets or sets the texture filtering mode used when rendering text.
-		/// </summary>
-		public TextureFiltering TextTextureFiltering
-		{
-			get => _renderer.TextTextureFiltering;
-
-			set => _renderer.TextTextureFiltering = value;
-		}
-
 		internal Transform Transform
 		{
 			get => _renderer.Transform;
@@ -87,7 +80,7 @@ namespace Myra.Graphics2D
 		public void AddOpacity(float opacity) => _renderer.AddOpacity(opacity);
 
 		/// <summary>
-		/// Draws a texture to a destination rectangle with rotation and depth.
+		/// Draws a texture to a destination rectangle with rotation, depth and an optional texture filtering override.
 		/// </summary>
 		/// <param name="texture">The texture to draw.</param>
 		/// <param name="destinationRectangle">The destination rectangle to draw the texture to.</param>
@@ -95,38 +88,12 @@ namespace Myra.Graphics2D
 		/// <param name="color">The color tint to apply.</param>
 		/// <param name="rotation">The rotation angle in radians.</param>
 		/// <param name="depth">The depth layer for sorting.</param>
-		public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, float depth = 0.0f) => 
-			_renderer.Draw(texture, destinationRectangle, sourceRectangle, color, rotation, depth);
+		/// <param name="textureFiltering">An optional texture filtering override, or null to use the default from <see cref="MyraEnvironment.ImageTextureFiltering"/>.</param>
+		public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation = 0, float depth = 0.0f, TextureFiltering? textureFiltering = null) =>
+			_renderer.Draw(texture, destinationRectangle, sourceRectangle, color, rotation, depth, textureFiltering);
 
 		/// <summary>
-		/// Draws a texture to a destination rectangle with rotation.
-		/// </summary>
-		/// <param name="texture">The texture to draw.</param>
-		/// <param name="destinationRectangle">The destination rectangle to draw the texture to.</param>
-		/// <param name="sourceRectangle">An optional rectangle within the texture to draw, or null for the entire texture.</param>
-		/// <param name="color">The color tint to apply.</param>
-		/// <param name="rotation">The rotation angle in radians.</param>
-		public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation) => Draw(texture, destinationRectangle, sourceRectangle, color, rotation, 0.0f);
-
-		/// <summary>
-		/// Draws a texture to a destination rectangle with a color tint.
-		/// </summary>
-		/// <param name="texture">The texture to draw.</param>
-		/// <param name="destinationRectangle">The destination rectangle to draw the texture to.</param>
-		/// <param name="sourceRectangle">An optional rectangle within the texture to draw, or null for the entire texture.</param>
-		/// <param name="color">The color tint to apply.</param>
-		public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color) => Draw(texture, destinationRectangle, sourceRectangle, color, 0);
-
-		/// <summary>
-		/// Draws a texture stretched to a destination rectangle.
-		/// </summary>
-		/// <param name="texture">The texture to draw.</param>
-		/// <param name="destinationRectangle">The destination rectangle to draw the texture to.</param>
-		/// <param name="color">The color tint to apply.</param>
-		public void Draw(Texture2D texture, Rectangle destinationRectangle, Color color) => Draw(texture, destinationRectangle, null, color, 0);
-
-		/// <summary>
-		/// Draws a texture at a position with source rectangle, rotation, scale, and depth.
+		/// Draws a texture at a position with source rectangle, rotation, scale, depth and an optional texture filtering override.
 		/// </summary>
 		/// <param name="texture">The texture to draw.</param>
 		/// <param name="position">The position to draw the texture at.</param>
@@ -135,8 +102,9 @@ namespace Myra.Graphics2D
 		/// <param name="rotation">The rotation angle in radians.</param>
 		/// <param name="scale">The scale factor to apply.</param>
 		/// <param name="depth">The depth layer for sorting.</param>
-		public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 scale, float depth = 0.0f) =>
-			_renderer.Draw(texture, position, sourceRectangle, color, rotation, scale, depth);
+		/// <param name="textureFiltering">An optional texture filtering override, or null to use the default from <see cref="MyraEnvironment.ImageTextureFiltering"/>.</param>
+		public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 scale, float depth = 0.0f, TextureFiltering? textureFiltering = null) =>
+			_renderer.Draw(texture, position, sourceRectangle, color, rotation, scale, depth, textureFiltering);
 
 		/// <summary>
 		/// Draws a texture at a position with color, scale, and optional rotation.

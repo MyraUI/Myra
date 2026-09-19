@@ -2,6 +2,7 @@
 using AssetManagementBase;
 using Myra.Graphics2D.TextureAtlases;
 using FontStashSharp;
+using Myra.Graphics2D;
 
 namespace Myra
 {
@@ -92,6 +93,7 @@ namespace Myra
 #else
 					_whiteRegion = new TextureRegion(SpriteFontBase.GetWhite(MyraEnvironment.Platform.Renderer.TextureManager));
 #endif
+					_whiteRegion.Filter = TextureFiltering.Nearest;
 				}
 
 				return _whiteRegion;

@@ -66,6 +66,12 @@ namespace Myra.Graphics2D.TextureAtlases
 		}
 
 		/// <summary>
+		/// Gets or sets the texture filtering mode to use when drawing this region.
+		/// When null, the filtering from the render context is used.
+		/// </summary>
+		public TextureFiltering? Filter { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="TextureRegion"/> class with the specified texture and bounds.
 		/// </summary>
 		/// <param name="texture">The texture to use.</param>
@@ -128,7 +134,7 @@ namespace Myra.Graphics2D.TextureAtlases
 		/// <param name="color">The color to blend with the texture.</param>
 		public virtual void Draw(RenderContext context, Rectangle dest, Color color)
 		{
-			context.Draw(Texture, dest, Bounds, color);
+			context.Draw(Texture, dest, Bounds, color, textureFiltering: Filter);
 		}
 
 		/// <summary>
