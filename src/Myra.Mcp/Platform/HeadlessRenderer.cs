@@ -22,6 +22,10 @@ internal sealed class HeadlessRenderer : IMyraRenderer
 
     public Rectangle Scissor { get; set; }
 
+    public void Dispose()
+    {
+    }
+
     public void Begin(TextureFiltering textureFiltering)
     {
         // No-op: nothing is drawn headlessly.
