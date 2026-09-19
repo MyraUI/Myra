@@ -91,6 +91,8 @@ namespace Myra.Graphics2D
 
 		public Point InverseApply(Point source) => InverseApply(new Vector2(source.X, source.Y)).ToPoint();
 
+		public Rectangle InverseApply(Rectangle source) => source.Transform(ref _inverseMatrix);
+
 		public Rectangle Apply(Rectangle source) => source.Transform(ref Matrix);
 	}
 }

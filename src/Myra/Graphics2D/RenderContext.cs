@@ -65,6 +65,54 @@ namespace Myra.Graphics2D
 		}
 
 		/// <summary>
+		/// Transforms a rectangle from local (widget) coordinates to global (screen) coordinates
+		/// using the render context's current transform.
+		/// </summary>
+		/// <param name="rectangle">The rectangle in local coordinates.</param>
+		/// <returns>The rectangle in global (screen) coordinates.</returns>
+		public Rectangle ToGlobal(Rectangle rectangle) => Transform.Apply(rectangle);
+
+		/// <summary>
+		/// Transforms a point from local (widget) coordinates to global (screen) coordinates
+		/// using the render context's current transform.
+		/// </summary>
+		/// <param name="point">The point in local coordinates.</param>
+		/// <returns>The point in global (screen) coordinates.</returns>
+		public Point ToGlobal(Point point) => Transform.Apply(point);
+
+		/// <summary>
+		/// Transforms a vector from local (widget) coordinates to global (screen) coordinates
+		/// using the render context's current transform.
+		/// </summary>
+		/// <param name="vector">The vector in local coordinates.</param>
+		/// <returns>The vector in global (screen) coordinates.</returns>
+		public Vector2 ToGlobal(Vector2 vector) => Transform.Apply(vector);
+
+		/// <summary>
+		/// Transforms a rectangle from global (screen) coordinates to local (widget) coordinates
+		/// using the inverse of the render context's current transform.
+		/// </summary>
+		/// <param name="rectangle">The rectangle in global (screen) coordinates.</param>
+		/// <returns>The rectangle in local (widget) coordinates.</returns>
+		public Rectangle ToLocal(Rectangle rectangle) => Transform.InverseApply(rectangle);
+
+		/// <summary>
+		/// Transforms a point from global (screen) coordinates to local (widget) coordinates
+		/// using the inverse of the render context's current transform.
+		/// </summary>
+		/// <param name="point">The point in global (screen) coordinates.</param>
+		/// <returns>The point in local (widget) coordinates.</returns>
+		public Point ToLocal(Point point) => Transform.InverseApply(point);
+
+		/// <summary>
+		/// Transforms a vector from global (screen) coordinates to local (widget) coordinates
+		/// using the inverse of the render context's current transform.
+		/// </summary>
+		/// <param name="vector">The vector in global (screen) coordinates.</param>
+		/// <returns>The vector in local (widget) coordinates.</returns>
+		public Vector2 ToLocal(Vector2 vector) => Transform.InverseApply(vector);
+
+		/// <summary>
 		/// Releases all resources used by the <see cref="RenderContext"/>.
 		/// </summary>
 		public void Dispose()

@@ -2,6 +2,8 @@
 using FontStashSharp;
 using Myra.Utility;
 using FontStashSharp.RichText;
+using Myra.Graphics2D.UI;
+
 
 
 #if MONOGAME || FNA
@@ -274,7 +276,19 @@ namespace Myra.Graphics2D
 				rotation += Transform.Rotation;
 
 #if MONOGAME || FNA || STRIDE
-				font.DrawText(_renderer, text, position, color, rotation, Vector2.Zero, scale, layerDepth);
+				if (font.FontRasterizationMode == FontRasterizationMode.Standard)
+				{
+					font.DrawText(_renderer, text, position, color, rotation, Vector2.Zero, scale, layerDepth);
+				}
+				else
+				{
+#if MONOGAME || FNA
+					SDFTextBatch.DrawString(font, text, position, color, rotation, Vector2.Zero, scale, layerDepth);
+#else
+					font.DrawText(_renderer, text, position, color, rotation, Vector2.Zero, scale, layerDepth);
+#endif
+				}
+
 #else
 				if (_fontStashRenderer != null)
 				{
