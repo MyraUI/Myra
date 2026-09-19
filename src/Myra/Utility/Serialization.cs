@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using Myra.Graphics2D;
+using Myra.Graphics2D.UI;
 using System;
 using System.Collections.Generic;
 using Myra.MML;
@@ -25,7 +26,8 @@ namespace Myra.Utility
 			{typeof(Vector2), new Vector2Serializer()},
 			{typeof(Thickness), new ThicknessSerializer()},
 			{typeof(Color), new ColorSerializer()},
-			{typeof(Rectangle), new RectangleSerializer()}
+			{typeof(Rectangle), new RectangleSerializer()},
+			{typeof(Dimension), new DimensionSerializer()}
 		};
 
 		public static bool HasDefaultValue(this PropertyInfo property, object value)

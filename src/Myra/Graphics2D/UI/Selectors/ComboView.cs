@@ -260,7 +260,7 @@ namespace Myra.Graphics2D.UI
 
 			// Temporary remove width, so it wont be used in the measure
 			var oldWidth = _listView.Width;
-			_listView.Width = null;
+			_listView.Width = Dimension.Auto;
 
 			// Make visible, otherwise Measure will return zero
 			var wasVisible = _listView.Visible;
