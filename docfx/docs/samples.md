@@ -75,7 +75,7 @@ Demonstrates how to scale the Myra UI. A slider changes the scale of the widget 
 ### RoundedCorners
 [View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.RoundedCorners)
 
-![RoundedCorners Sample](~/images/rounded-corners.png)
+![RoundedCorners Sample](~/images/samples/RoundedCorners.png)
 
 This sample demonstrates creating widgets with rounded corners using two different approaches: `BrushFactory` (which procedurally generates a nine-patch texture) and `NvgSharp` (which draws vector rounded rectangles). Both solid and hollow (bordered) variants of each approach are shown side by side, and a slider zooms the entire UI up to 4x so the differences between the two techniques can be inspected closely.
 
