@@ -92,6 +92,34 @@ widget.Background = new NinePatchRegion(texture, new Rectangle(10, 10, 50, 50),
                                                        Top = 2, Bottom = 2});
 ```
 
+### Rounded Corners
+[BrushFactory](https://github.com/MyraUI/Myra/blob/master/src/Myra/Graphics2D/Brushes/BrushFactory.cs) generates procedural brushes with rounded corners. It is the easiest way to create smooth rounded panels and buttons when you don't want to ship a separate texture: the brush is generated once at runtime, then reused.
+
+Both factory methods return an IBrush based on a [NinePatchRegion](#ninepatchregion), so the corners always keep their shape (the region's border is set to the radius), no matter the widget size.
+
+#### CreateSolidRoundedRect
+Creates a brush filled entirely with the given color:
+```c#
+// 64x64 px source texture, 16 px corner radius, solid blue background
+widget.Background = BrushFactory.CreateSolidRoundedRect(color: new Color(48, 120, 220));
+```
+
+#### CreateHollowRoundedRect
+Creates a brush with a border (stroke) of the given width around it plus a fill color:
+```c#
+// 64x64 px source texture, 16 px corner radius,
+// 4 px blue border with a semi-transparent blue interior
+widget.Background = BrushFactory.CreateHollowRoundedRect(radius: 16, borderWidth: 4,
+                                                         color: new Color(48, 120, 220),
+                                                         fillColor: new Color(48, 120, 220, 120));
+```
+
+Both `radius` and `borderWidth` are in source-texture pixels, so scale them (along with `size`) if you need high resolution on high-DPI displays.
+
+The screenshot below comes from the [RoundedCorners sample](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.RoundedCorners) which shows all four approaches side by side - solid and hollow rounded corners produced both by `BrushFactory` and by NvgSharp - with a slider that zooms the whole UI up to 4x so the differences can be inspected closely:
+
+![Rounded Corners Sample](~/images/rounded-corners.png)
+
 ### TextureRegionAtlas
 [TextureRegionAtlas](https://github.com/rds1983/Myra/blob/master/src/Myra/Graphics2D/TextureAtlases/TextureRegionAtlas.cs) is collection of texture regions(each could be nine patch) accessible by string key.
 

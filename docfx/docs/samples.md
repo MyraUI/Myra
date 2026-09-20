@@ -72,6 +72,13 @@ A practical example of building a text editor application with file operations, 
 
 Demonstrates how to scale the Myra UI. A slider changes the scale of the widget tree via the `Scale` property, while a "Text Scaling" combo switches between different text rasterization modes (standard, high-resolution with supersampling, and SDF) to keep text crisp when rendering at higher scales. The selected mode's parameters can be tweaked live through a property grid. The sample also shows configuring text and image texture filtering to control visual quality, and a stylesheet combo switching between the `Default` and `Default2X` asset sets for comparing high-resolution assets under scaling.
 
+### RoundedCorners
+[View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.RoundedCorners)
+
+![RoundedCorners Sample](~/images/rounded-corners.png)
+
+This sample demonstrates creating widgets with rounded corners using two different approaches: `BrushFactory` (which procedurally generates a nine-patch texture) and `NvgSharp` (which draws vector rounded rectangles). Both solid and hollow (bordered) variants of each approach are shown side by side, and a slider zooms the entire UI up to 4x so the differences between the two techniques can be inspected closely.
+
 ### Viewports
 [View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Viewports)
 
