@@ -23,7 +23,7 @@ private void ShowContextMenu()
 
     var titleContainer = new Panel
     {
-        Background = DefaultAssets.UITextureRegionAtlas["button"],
+        Background = DefaultAssets.DefaultStylesheet.ButtonStyle.Background,
     };
 
     var titleLabel = new Label
