@@ -1,8 +1,8 @@
-﻿using Myra.Graphics2D;
-using Myra.Graphics2D.UI;
+﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using FontStashSharp;
+using Myra.Graphics2D;
+using Myra.Graphics2D.UI;
 
 namespace Myra.Samples;
 
@@ -34,10 +34,10 @@ public class FixedSizeGame : Game
 	{
 		base.LoadContent();
 
-		MyraEnvironment.Game = this;
-
 		// Set the default font rasterization mode to SDF for better scaling
 		FontSystemDefaults.FontRasterizationMode = FontRasterizationMode.SDF;
+
+		MyraEnvironment.Game = this;
 
 		// Set the default texture filtering to linear for smoother scaling
 		MyraEnvironment.ImageTextureFiltering = TextureFiltering.Linear;

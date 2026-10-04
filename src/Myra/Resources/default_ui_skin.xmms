@@ -128,7 +128,7 @@
     </MenuStyle>
   </HorizontalMenuStyles>
   <VerticalMenuStyles>
-    <MenuStyle SelectionHoverBackground="button-over" SelectionBackground="button-down" SpecialCharColor="Red" Background="button" Border="#1BA1E2FF" BorderThickness="1">
+    <MenuStyle SelectionHoverBackground="button-over" SelectionBackground="button-down" SpecialCharColor="Red" Background="window" Padding="1">
       <ImageStyle Padding="10, 0, 0, 0" />
       <LabelStyle TextColor="White" DisabledTextColor="Gray" Font="default-font" Padding="10, 0" />
       <ShortcutStyle TextColor="White" DisabledTextColor="Gray" Font="default-font" Padding="0, 0, 10, 0" />

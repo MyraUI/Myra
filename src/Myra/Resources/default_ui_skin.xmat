@@ -105,5 +105,5 @@
   <NinePatchRegion Id="window-border-bg" Left="836" Top="28" Width="3" Height="3" NinePatchLeft="1" NinePatchTop="1" NinePatchRight="1" NinePatchBottom="1" />
   <NinePatchRegion Id="window-noborder" Left="843" Top="28" Width="27" Height="34" NinePatchLeft="5" NinePatchTop="26" NinePatchRight="4" NinePatchBottom="3" />
   <NinePatchRegion Id="window-resizable" Left="874" Top="28" Width="27" Height="43" NinePatchLeft="5" NinePatchTop="3" NinePatchRight="12" NinePatchBottom="12" />
-  <NinePatchRegion Id="window" Left="905" Top="28" Width="27" Height="34" NinePatchLeft="5" NinePatchTop="26" NinePatchRight="4" NinePatchBottom="3" />
+  <NinePatchRegion Id="window" Left="905" Top="28" Width="27" Height="34" Filter="Nearest" NinePatchLeft="1" NinePatchTop="1" NinePatchRight="1" NinePatchBottom="1" />
 </TextureAtlas>
