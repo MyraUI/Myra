@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Myra.Samples.CustomBrushes"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Myra.Samples.RoundedCorners", "..\samples\Myra.Samples.RoundedCorners\Myra.Samples.RoundedCorners.csproj", "{748D918D-5837-4D44-90C0-CA5807DE72C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Myra.Samples.FixedSize.MonoGame", "..\samples\Myra.Samples.FixedSize\Myra.Samples.FixedSize.MonoGame.csproj", "{76151811-5DFC-D176-4083-46B7980E556A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{748D918D-5837-4D44-90C0-CA5807DE72C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{748D918D-5837-4D44-90C0-CA5807DE72C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{748D918D-5837-4D44-90C0-CA5807DE72C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76151811-5DFC-D176-4083-46B7980E556A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76151811-5DFC-D176-4083-46B7980E556A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76151811-5DFC-D176-4083-46B7980E556A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76151811-5DFC-D176-4083-46B7980E556A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,6 +199,7 @@ Global
 		{B5884E84-C88E-75F5-FA92-357A028D4830} = {EAB0AA24-7185-4897-A866-AE87AF3F2E0B}
 		{1509EBE5-03AD-40E9-AEE1-C582B66C9009} = {EAB0AA24-7185-4897-A866-AE87AF3F2E0B}
 		{748D918D-5837-4D44-90C0-CA5807DE72C5} = {EAB0AA24-7185-4897-A866-AE87AF3F2E0B}
+		{76151811-5DFC-D176-4083-46B7980E556A} = {EAB0AA24-7185-4897-A866-AE87AF3F2E0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35ACDF4E-2CE2-46B1-A19F-35DC131069A1}
