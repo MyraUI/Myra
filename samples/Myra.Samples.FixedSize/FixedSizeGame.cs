@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Myra.Graphics2D;
 using Myra.Graphics2D.UI;
+using Myra.Graphics2D.UI.Styles;
 
 namespace Myra.Samples;
 
@@ -41,6 +42,8 @@ public class FixedSizeGame : Game
 
 		// Set the default texture filtering to linear for smoother scaling
 		MyraEnvironment.ImageTextureFiltering = TextureFiltering.Linear;
+
+		// Stylesheet.Current = DefaultAssets.DefaultStylesheet2X;
 
 		var mainForm = new AllWidgets();
 

@@ -20,8 +20,6 @@
   href: margin-border-padding.md
 - name: Widget Transformations
   href: widget-transformations.md
-- name: Viewports
-  href: viewports.md
 - name: Grid Layout
   href: grid-layout.md
 - name: StackPanel Layout

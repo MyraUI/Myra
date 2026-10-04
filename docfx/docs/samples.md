@@ -16,6 +16,13 @@ Demonstrates all available built-in Myra widgets including buttons, checkboxes, 
 
 Shows how to create and apply a custom UI stylesheet to customize the appearance of Myra widgets.
 
+### CustomBrushes
+[View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.CustomBrushes)
+
+![CustomBrushes Sample](~/images/samples/CustomBrushes.png)
+
+This sample demonstrates three custom `IBrush` implementations used as widget backgrounds. `MatrixBrush` renders Matrix-style "digital rain" by drawing falling digit columns with `RenderContext.DrawString`, using fonts of varying sizes taken from `DefaultAssets.DebugFontSystem` and advancing them based on elapsed time. `NvgBrush` renders NanoVG vector graphics (via NvgSharp) into a widget's rectangle: it converts the destination rectangle to global coordinates, flushes Myra's render context with `context.End()`, sets the device viewport to those bounds, invokes a user-supplied `PaintHandler`, and restarts the batch afterwards - note that stencil-based strokes require a `Depth24Stencil8` back buffer. `AnimatedGifBrush` decodes an animated GIF up-front with StbImageSharp into `Texture2D` frames (honouring per-frame delays) and advances the current frame automatically on each draw. Each brush is shown in a fixed-size card with `ClipToBounds`, and SDF font rasterization is enabled so the text stays crisp.
+
 ### DebugConsole
 [View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.DebugConsole)
 
@@ -72,19 +79,19 @@ A practical example of building a text editor application with file operations, 
 
 Demonstrates how to scale the Myra UI. A slider changes the scale of the widget tree via the `Scale` property, while a "Text Scaling" combo switches between different text rasterization modes (standard, high-resolution with supersampling, and SDF) to keep text crisp when rendering at higher scales. The selected mode's parameters can be tweaked live through a property grid. The sample also shows configuring text and image texture filtering to control visual quality, and a stylesheet combo switching between the `Default` and `Default2X` asset sets for comparing high-resolution assets under scaling.
 
+### FixedSize
+[View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.FixedSize)
+
+![FixedSize Sample](~/images/samples/FixedSize.png)
+
+This sample demonstrates rendering a fixed-size UI. It loads the `AllWidgets` layout from MML and sets `Desktop.BoundsFetcher` to always return a 1200x800 rectangle, so the widget tree keeps a constant logical size no matter how the window is resized. Each frame the viewport dimensions are divided by the fixed size and assigned to `Desktop.Scale`, which fits the whole UI to the window, while `TransformOrigin` is set to `Vector2.Zero` (instead of its default centered origin) so scaling happens around the top-left corner. To keep the scaled result sharp, fonts are rasterized in SDF mode via `FontSystemDefaults.FontRasterizationMode` and `MyraEnvironment.ImageTextureFiltering` is set to `TextureFiltering.Linear`. Note that the horizontal and vertical scale factors are computed independently, so a window with a different aspect ratio stretches the UI.
+
 ### RoundedCorners
 [View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.RoundedCorners)
 
 ![RoundedCorners Sample](~/images/samples/RoundedCorners.png)
 
 This sample demonstrates creating widgets with rounded corners using two different approaches: `BrushFactory` (which procedurally generates a nine-patch texture) and `NvgSharp` (which draws vector rounded rectangles). Both solid and hollow (bordered) variants of each approach are shown side by side, and a slider zooms the entire UI up to 4x so the differences between the two techniques can be inspected closely.
-
-### Viewports
-[View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.Viewports)
-
-![Viewports Sample](~/images/samples/Viewports.png)
-
-Demonstrates the use of viewport-based rendering for displaying content in constrained areas of the UI.
 
 ### DataGrid
 [View on GitHub](https://github.com/MyraUI/Myra/tree/master/samples/Myra.Samples.DataGrid)
