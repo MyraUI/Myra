@@ -39,47 +39,6 @@ Would result in the following image:
 
 ![alt text](~/images/images.png)
 
-### Rounded Corners
-Myra provides 2 brushes that draw rectangles with rounded corners, one for each variant:
-
-- [RoundedCornersSolidBrush](https://github.com/MyraUI/Myra/blob/master/src/Myra/Graphics2D/Brushes/RoundedCornersSolidBrush.cs)
-- [RoundedCornersHollowBrush](https://github.com/MyraUI/Myra/blob/master/src/Myra/Graphics2D/Brushes/RoundedCornersHollowBrush.cs)
-
-Both are backed by a procedurally generated [NinePatchRegion](#ninepatchregion) whose border is set to the corner radius, so the corners always keep their shape.
-
-The texture is generated lazily on the first draw and regenerated whenever any property changes. Myra must be set up before the brush is drawn (see [MyraEnvironment](myra-environment.md)).
-
-#### RoundedCornersSolidBrush
-Fills the whole shape with a single color:
-```c#
-// 64x64 px source texture, 16 px corner radius, solid blue background
-widget.Background = new RoundedCornersSolidBrush(Color.CornflowerBlue);
-```
-
-#### RoundedCornersHollowBrush
-Draws a border (stroke) of the given width around it plus a fill color. A transparent fill color leaves the interior empty:
-```c#
-// 64x64 px source texture, 16 px corner radius,
-// 4 px blue border with a semi-transparent blue interior
-widget.Background = new RoundedCornersHollowBrush(Color.CornflowerBlue,
-                                                  new Color(48, 120, 220, 120),
-                                                  borderWidth: 4);
-```
-
-`Radius`, `BorderWidth` and `Size` are all in source-texture pixels, so scale them (along with `Size`) if you need high resolution on high-DPI displays. All properties can be changed at any time:
-```c#
-var brush = new RoundedCornersSolidBrush(Color.CornflowerBlue);
-widget.Background = brush;
-
-brush.Radius = 24; // the brush regenerates its texture on the next draw
-```
-
-The brushes own the textures they generate, so dispose them when they are no longer used:
-```c#
-brush.Dispose();
-```
-_Note_. On the platform-agnostic builds the texture manager does not expose disposal, so `Dispose` leaves the texture to the garbage collector.
-
 ### IImage
 [IImage](https://github.com/rds1983/Myra/blob/master/src/Myra/Graphics2D/IImage.cs) extends IBrush with Size property:
 ```c#
@@ -142,3 +101,44 @@ It could be loaded from [MyraTexturePacker](https://github.com/rds1983/MyraTextu
 // 'textures' is dictionary that maps texture file names to actual textures
 TextureRegionAtlas spriteSheet = TextureRegionAtlas.Load(data, name => textures[name]);
 ```
+
+### Rounded Corners
+Myra provides 2 brushes that draw rectangles with rounded corners, one for each variant:
+
+- [RoundedCornersSolidBrush](https://github.com/MyraUI/Myra/blob/master/src/Myra/Graphics2D/Brushes/RoundedCornersSolidBrush.cs)
+- [RoundedCornersHollowBrush](https://github.com/MyraUI/Myra/blob/master/src/Myra/Graphics2D/Brushes/RoundedCornersHollowBrush.cs)
+
+Both are backed by a procedurally generated [NinePatchRegion](#ninepatchregion) whose border is set to the corner radius, so the corners always keep their shape.
+
+The texture is generated lazily on the first draw and regenerated whenever any property changes. Myra must be set up before the brush is drawn (see [MyraEnvironment](myra-environment.md)).
+
+#### RoundedCornersSolidBrush
+Fills the whole shape with a single color:
+```c#
+// 64x64 px source texture, 16 px corner radius, solid blue background
+widget.Background = new RoundedCornersSolidBrush(Color.CornflowerBlue);
+```
+
+#### RoundedCornersHollowBrush
+Draws a border (stroke) of the given width around it plus a fill color. A transparent fill color leaves the interior empty:
+```c#
+// 64x64 px source texture, 16 px corner radius,
+// 4 px blue border with a semi-transparent blue interior
+widget.Background = new RoundedCornersHollowBrush(Color.CornflowerBlue,
+                                                  new Color(48, 120, 220, 120),
+                                                  borderWidth: 4);
+```
+
+`Radius`, `BorderWidth` and `Size` are all in source-texture pixels, so scale them (along with `Size`) if you need high resolution on high-DPI displays. All properties can be changed at any time:
+```c#
+var brush = new RoundedCornersSolidBrush(Color.CornflowerBlue);
+widget.Background = brush;
+
+brush.Radius = 24; // the brush regenerates its texture on the next draw
+```
+
+The brushes own the textures they generate, so dispose them when they are no longer used:
+```c#
+brush.Dispose();
+```
+_Note_. On the platform-agnostic builds the texture manager does not expose disposal, so `Dispose` leaves the texture to the garbage collector.
