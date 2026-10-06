@@ -362,11 +362,11 @@ namespace Myra.Graphics2D.UI
 				if (Orientation == Orientation.Horizontal)
 				{
 					h.Width = handleSize;
-					h.Height = null;  // Let height stretch to fill available space
+					h.Height = Dimension.Auto;  // Let height stretch to fill available space
 				}
 				else
 				{
-					h.Width = null;  // Let width stretch to fill available space
+					h.Width = Dimension.Auto;  // Let width stretch to fill available space
 					h.Height = handleSize;
 				}
 			}
