@@ -8,6 +8,8 @@
   href: MyraPad.md
 - name: MyraViewer
   href: MyraViewer.md
+- name: myra-export
+  href: MyraExport.md
 - name: Images
   href: images.md
 - name: Text Rendering
