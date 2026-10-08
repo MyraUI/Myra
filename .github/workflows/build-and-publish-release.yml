@@ -47,3 +47,6 @@ jobs:
     - name: Publish MyraViewer to NuGet
       run: nuget.exe push src\MyraViewer\bin\MonoGame\Release\myraviewer.*.nupkg ${{secrets.NUGET_APIKEY}} -Source https://api.nuget.org/v3/index.json
       continue-on-error: true
+    - name: Publish MyraExport to NuGet
+      run: nuget.exe push src\MyraExport\bin\MyraExport\Release\myra-export.*.nupkg ${{secrets.NUGET_APIKEY}} -Source https://api.nuget.org/v3/index.json
+      continue-on-error: true
