@@ -7,7 +7,7 @@
     <AssemblyName>myra-export</AssemblyName>
     <PackageId>myra-export</PackageId>
     <ToolCommandName>myra-export</ToolCommandName>
-    <OutputPath>bin\MyraExport\$(Configuration)</OutputPath>
+    <OutputPath>bin\MonoGame\$(Configuration)</OutputPath>
     <DefineConstants>$(DefineConstants);MONOGAME</DefineConstants>
   </PropertyGroup>
 
